@@ -1,0 +1,49 @@
+sudo: true
+
+
+
+language: node_js
+node_js: '12.16.1'
+
+branches:
+ only:
+   - source
+
+git:
+ depth: false
+ submodules: false
+
+cache:
+ apt: true
+ directories:
+   - node_modules
+
+before_install:
+  - npm uninstall hexo-renderer-marked --save
+  - npm install hexo-renderer-kramed --save
+  - npm install hexo-deployer-git --save
+  - npm install hexo-cli -g
+install: npm install
+
+before_script:
+  - wget https://github.com/jgm/pandoc/releases/download/2.7/pandoc-2.7-1-amd64.deb
+  - sudo dpkg -i ./pandoc-2.7-1-amd64.deb
+script:
+  - hexo clean
+  - hexo g -d
+
+
+deploy:
+  provider: pages
+  skip-cleanup: true
+  github-token: $GITHUB_TOKEN
+  keep-history: true
+  on:
+    branch: master
+  local-dir: public
+
+notifications:
+  email:
+    - 2363618563@qq.com
+  on_success: change
+  on_failure: always
