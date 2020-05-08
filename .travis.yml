@@ -22,6 +22,8 @@ before_install:
   - npm uninstall hexo-renderer-marked --save
   - npm install hexo-renderer-kramed --save
   - npm install hexo-deployer-git --save
+  - git config --global user.name kele1997
+  - git config --global user.email 2363618563@qq.com
   - npm install hexo-cli -g
 install: npm install
 
