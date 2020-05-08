@@ -103,7 +103,11 @@ excerpt:
   more_excludes: []
   hideWholePostExcerpts: true
 deploy:
-  type: 'git'
-  repo: https://github.com/kele1997/kele1997.github.io.git
-  branch: master
-  token: $GITHUB_TOKEN
+  type: git
+  repo:
+    github:
+      url: https://github.com/kele1997/kele1997.github.io.git
+      branch: master
+      token: $GITHUB_TOKEN
+  name: kele1997
+  email: 2363618563@qq.com
