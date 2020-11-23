@@ -111,3 +111,6 @@ deploy:
       token: $GITHUB_TOKEN
   name: kele1997
   email: 2363618563@qq.com
+
+tag_plantuml:
+	type: static

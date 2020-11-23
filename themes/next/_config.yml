@@ -997,3 +997,5 @@ images: images
 
 graphviz:
   enable: true
+hexo-tag-plantum:
+  enable: true
