@@ -1,0 +1,564 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 4.2.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+  <meta name="google-site-verification" content="UA-100684831-1">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"kele1997.github.io","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="一、部署监控节点 ceph-mon 启动监控节点需要下面这些内容： 1. unique id &#x3D;&#x3D;&gt; fsid 集群唯一标识 id,区别集群 2. cluster name &#x3D;&#x3D;&gt; 集群名（不可以有空格） 默认为 ceph, 多个集群时，集群名便于查看 ceph --cluster {cluster-name}). ，也可以简化命令行操作 3. monitor name &#x3D;&#x3D;&gt;">
+<meta property="og:type" content="article">
+<meta property="og:title" content="ceph 集群搭建">
+<meta property="og:url" content="https://kele1997.github.io/2020/07/24/2020-7-24-ceph%E6%90%AD%E5%BB%BA/index.html">
+<meta property="og:site_name" content="可乐的博客">
+<meta property="og:description" content="一、部署监控节点 ceph-mon 启动监控节点需要下面这些内容： 1. unique id &#x3D;&#x3D;&gt; fsid 集群唯一标识 id,区别集群 2. cluster name &#x3D;&#x3D;&gt; 集群名（不可以有空格） 默认为 ceph, 多个集群时，集群名便于查看 ceph --cluster {cluster-name}). ，也可以简化命令行操作 3. monitor name &#x3D;&#x3D;&gt;">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2020-07-24T12:49:37.000Z">
+<meta property="article:modified_time" content="2020-11-23T10:12:28.221Z">
+<meta property="article:author" content="Kele">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="https://kele1997.github.io/2020/07/24/2020-7-24-ceph%E6%90%AD%E5%BB%BA/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>ceph 集群搭建 | 可乐的博客</title>
+  
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-100684831-1"></script>
+    <script>
+      if (CONFIG.hostname === location.hostname) {
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', 'UA-100684831-1');
+      }
+    </script>
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">可乐的博客</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+        <li class="menu-item menu-item-commonweal">
+
+    <a href="/404/" rel="section"><i class="fa fa-heartbeat fa-fw"></i>公益 404</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://kele1997.github.io/2020/07/24/2020-7-24-ceph%E6%90%AD%E5%BB%BA/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.jpg">
+      <meta itemprop="name" content="Kele">
+      <meta itemprop="description" content="菜鸡">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="可乐的博客">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          ceph 集群搭建
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2020-07-24 12:49:37" itemprop="dateCreated datePublished" datetime="2020-07-24T12:49:37+00:00">2020-07-24</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2020-11-23 10:12:28" itemprop="dateModified" datetime="2020-11-23T10:12:28+00:00">2020-11-23</time>
+              </span>
+
+          <br>
+            <span class="post-meta-item" title="本文字数">
+              <span class="post-meta-item-icon">
+                <i class="far fa-file-word"></i>
+              </span>
+                <span class="post-meta-item-text">本文字数：</span>
+              <span>7.5k</span>
+            </span>
+            <span class="post-meta-item" title="阅读时长">
+              <span class="post-meta-item-icon">
+                <i class="far fa-clock"></i>
+              </span>
+                <span class="post-meta-item-text">阅读时长 &asymp;</span>
+              <span>7 分钟</span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h1 id="一部署监控节点-ceph-mon">一、部署监控节点 ceph-mon</h1>
+<p>启动监控节点需要下面这些内容：<br />
+1. unique id ==&gt; fsid 集群唯一标识 id,区别集群<br />
+2. cluster name ==&gt; 集群名（不可以有空格） 默认为 ceph, 多个集群时，集群名便于查看 <code>ceph --cluster {cluster-name}).</code> ，也可以简化命令行操作 3. monitor name ==&gt; 监控实例的名字，普遍设置为监控实例所在主机的主机名，（推荐一个主机只有一个监控，最好不要有 osd 和其他监控)<br />
+4. monitor map ==&gt; 启动时需要生成，需要 fsid， cluster name ,至少一个名字或者IP地址(大概意思时至少有一个节点吧）<br />
+5. administrator keyring ==&gt; ceph cli 需要有 client.admin 用户，必须生成 admin 用户和 keyring 文件，添加 client.admin 用户 到 monitor keyring 中</p>
+<p>来源： https://docs.ceph.com/docs/master/install/manual-deployment/</p>
+<h2 id="安装必要的软件包">1. 安装必要的软件包</h2>
+<p>监控节点需要安装 ceph-common ceph-base ceph-mon librados2 等包 <code>yum install ceph-common ceph-base ceph-mon librados2</code></p>
+<h2 id="生成-fsid修改配置文件">2. 生成 fsid，修改配置文件</h2>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"># 这条命令会生成一个 uuid</span><br><span class="line">uuidgen</span><br></pre></td></tr></table></figure>
+<p><code>vim /etc/ceph/ceph.conf</code> 修改配置文件如下</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line">[global]</span><br><span class="line"># 上面使用 uuidgen 生成的 uuid</span><br><span class="line">fsid &#x3D; a7f64266-0894-4f1e-a635-d0aeaca0e993</span><br><span class="line"># cloud1指的是监控节点的主机名,如果多个监控节点，使用逗号分隔</span><br><span class="line">mon initial members &#x3D; cloud1[,&lt;hostname&gt;]</span><br><span class="line"># 监控节点的 ip 地址，注意是 ip 地址,多个监控节点，使用逗号分隔</span><br><span class="line">mon host &#x3D; 172.16.0.1,[, &lt;hostip&gt;]</span><br><span class="line"># 管理网网络</span><br><span class="line">public network &#x3D; 172.16.0.0&#x2F;24</span><br><span class="line"># 使用 cephx 认证</span><br><span class="line">auth cluster required &#x3D; cephx</span><br><span class="line">auth service required &#x3D; cephx</span><br><span class="line">auth client required &#x3D; cephx</span><br><span class="line">osd journal size &#x3D; 1024</span><br><span class="line"># 默认 object store pool size </span><br><span class="line">osd pool default size &#x3D; 3 </span><br><span class="line"># osd pool 的最小要求，小于2个 osd 无法 warn</span><br><span class="line">osd pool default min size &#x3D; 2</span><br><span class="line">osd pool default pg num &#x3D; 333</span><br><span class="line">osd pool default pgp num &#x3D; 333</span><br><span class="line">osd crush chooseleaf type &#x3D; 1</span><br></pre></td></tr></table></figure>
+<h2 id="生成-keyring-密钥启动ceph-mon服务">3. 生成 keyring 密钥,启动ceph-mon服务</h2>
+<h3 id="创建一个-keyring-文件">3.1. 创建一个 keyring 文件</h3>
+<p><strong>注意，这行命令中的 <code>mon.</code> 后面有一个 </strong><code>.</code>**,不要漏掉 这条命令会在 /tmp/ceph 下生成一个密钥文件，并且允许一切 ceph 一切权限 <code>ceph-authtool --create-keyring /tmp/ceph.mon.keyring --gen-key -n mon. --cap mon 'allow *'</code></p>
+<h3 id="创建-administrator-keyring">3.2. 创建 administrator keyring</h3>
+<p>生成一个 administrator 最高管理员的密钥，并允许一切 ceph 权限 <code>ceph-authtool --create-keyring /etc/ceph/ceph.client.admin.keyring --gen-key -n client.admin --cap mon 'allow *' --cap osd 'allow *' --cap mds 'allow *' --cap mgr 'allow *'</code></p>
+<h3 id="创建一个-bootstrap-osd-keyring">3.3. 创建一个 bootstrap-osd keyring</h3>
+<p>生成一个允许启动 osd 的密钥 <code>ceph-authtool --create-keyring /var/lib/ceph/bootstrap-osd/ceph.keyring --gen-key -n client.bootstrap-osd --cap mon 'profile bootstrap-osd' --cap mgr 'allow r'</code></p>
+<h3 id="把密钥添加到-ceph.mon.keyring-中以允许监控服务拥有上述用户权限">3.4. 把密钥添加到 ceph.mon.keyring 中，以允许监控服务拥有上述用户权限</h3>
+<p>将admin 的密钥和bootstrap-osd 的密钥都导入到mon的密钥中 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">ceph-authtool &#x2F;tmp&#x2F;ceph.mon.keyring --import-keyring etc&#x2F;ceph&#x2F;ceph.client.admin.keyring</span><br><span class="line">ceph-authtool &#x2F;tmp&#x2F;ceph.mon.keyring --import-keyring &#x2F;var&#x2F;lib&#x2F;ceph&#x2F;bootstrap-osd&#x2F;ceph.keyring</span><br></pre></td></tr></table></figure></p>
+<h3 id="修改-ceph.mon.keyring-文件所有者及所有者组因为ceph以ceph用户运行所以要保证有读取权限">3.5. 修改 ceph.mon.keyring 文件所有者及所有者组（因为ceph以ceph用户运行，所以要保证有读取权限）</h3>
+<p><code>chown ceph:ceph /tmp/ceph.mon.keyring</code></p>
+<h3 id="生成-monmap-文件">3.6. 生成 monmap 文件</h3>
+<p>hostname 本机的主机名 ip-address 是本机的管理网地址 uuid 是 <code>/etc/ceph/ceph.conf</code> 中的fsid <code>monmaptool --create --add {hostname} {ip-address} --fsid {uuid} /tmp/monmap</code></p>
+<h3 id="创建一个-ceph-mon-工作目录">3.7. 创建一个 ceph-mon 工作目录</h3>
+<p><strong>注意使用 <code>sudo -u ceph</code> 切换到 ceph用户执行,否则需要手动 chown -R ceph:ceph <filename> 修改文件夹所有者</strong> 如果多级目录不存在，可以考虑为 mkdir 传递 <code>-p</code> 参数<br />
+这里的 <code>cluster-name</code> 使用 <code>ceph</code>, 如果有多个ceph集群，可以使用多个不同的集群名<br />
+hostname 即本机主机名<br />
+<code>sudo -u ceph mkdir /var/lib/ceph/mon/{cluster-name}-{hostname}</code><br />
+示例： <code>sudo -u ceph mkdir /var/lib/ceph/mon/ceph-cloud1</code></p>
+<h3 id="创建新的-monitor-fs">3.8. 创建新的 monitor fs</h3>
+<p>这里的集群名属于可选参数，因为一般都是一套集群，这里的集群名是 ceph<br />
+<code>sudo -u ceph ceph-mon [--cluster {cluster-name}] --mkfs -i {hostname} --monmap /tmp/monmap --keyring /tmp/ceph.mon.keyring</code></p>
+<p>示例：<br />
+<code>sudo -u ceph ceph-mon --cluster ceph --mkfs -i cloud1 --monmap /tmp/monmap --keyring /tmp/ceph.mon.keyring</code></p>
+<h3 id="启动-ceph-mon">3.9. 启动 ceph-mon</h3>
+<p><code>systemctl start ceph-mon@cloud1</code> # cloud1 为主机名</p>
+<h3 id="验证-ceph-mon-是否正常">3.10 验证 ceph-mon 是否正常</h3>
+<p>ceph -s 输出为： 有输出则表示 ceph-mon 服务已经启动 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">cluster:</span><br><span class="line">  id:     a31d0c20-a7f0-43ab-92ca-8a4a7d88ef68</span><br><span class="line">  health: HEALTH_WARN</span><br><span class="line">          1 monitors have not enabled msgr2</span><br><span class="line"> </span><br><span class="line">services:</span><br><span class="line">  mon: 1 daemons, quorum cloud1 (age 15m)</span><br><span class="line">  mgr: no daemons active</span><br><span class="line">  osd: 0 osds: 0 up, 0 in</span><br><span class="line"> </span><br><span class="line">data:</span><br><span class="line">  pools:   0 pools, 0 pgs</span><br><span class="line">  objects: 0 objects, 0 B</span><br><span class="line">  usage:   0 B used, 0 B &#x2F; 0 B avail</span><br><span class="line">  pgs:</span><br></pre></td></tr></table></figure> ## 4. 启用 messager v2 https://docs.ceph.com/docs/master/rados/configuration/msgr2/ 在监控节点上运行 <code>ceph mon enable-msgr2</code></p>
+<p>使用 <code>ceph -s</code> 查看集群状态,不再提示要启用 msgr2 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">[root@cloud1 ~]# ceph -s</span><br><span class="line">  cluster:</span><br><span class="line">    id:     a31d0c20-a7f0-43ab-92ca-8a4a7d88ef68</span><br><span class="line">    health: HEALTH_OK</span><br><span class="line"> </span><br><span class="line">  services:</span><br><span class="line">    mon: 1 daemons, quorum cloud1 (age 2m)</span><br><span class="line">    mgr: cloud1(active, since 17h)</span><br><span class="line">    osd: 3 osds: 3 up (since 18h), 3 in (since 18h)</span><br><span class="line"> </span><br><span class="line">  data:</span><br><span class="line">    pools:   0 pools, 0 pgs</span><br><span class="line">    objects: 0 objects, 0 B</span><br><span class="line">    usage:   3.0 GiB used, 279 GiB &#x2F; 282 GiB avail</span><br><span class="line">    pgs:</span><br></pre></td></tr></table></figure></p>
+<h1 id="二-部署管理节点-ceph-mgr">二、 部署管理节点 ceph-mgr</h1>
+<p>** 在每一台部署了 ceph-mon 的机器上，都应该安装 ceph-mgr 服务 **<br />
+首先安装包:<br />
+<code>yum install ceph-common ceph-mon</code></p>
+<h2 id="添加-mgr-权限">1. 添加 mgr 权限</h2>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">#这里的 $hostname 使用一个名字代替，这里使用主机名 cloud1</span><br><span class="line">ceph auth get-or-create mgr.$hostname mon &#39;allow profile mgr&#39; osd &#39;allow *&#39; mds &#39;allow *&#39;</span><br></pre></td></tr></table></figure>
+<p>输出类似如下：<br />
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">[mgr.cloud1]</span><br><span class="line">    key &#x3D; AQCZ5QZfYap4HRAA97gVwodPmJB7dhZzbDYNpA&#x3D;&#x3D;</span><br></pre></td></tr></table></figure> 将上述内容复制到 <code>/var/lib/ceph/mgr/{cluster-name}-{$name}</code> 文件中 <code>cluster-name</code> 一般是<code>ceph</code>, $hostname 是主机名</p>
+<h2 id="启动-mgr-服务">2. 启动 mgr 服务</h2>
+<p><code>ceph-mgr -i ${hostname} # hostname 指主机名</code> PS: 关闭可以使用 <code>pkill ceph-mgr</code></p>
+<p>TODO: 貌似有部分高可用的功能</p>
+<h1 id="三部署存储节点-ceph-osd">三、部署存储节点 ceph-osd</h1>
+<p>mon 服务和 mgr 服务都部署完成之后，就可以部署 osd 存储服务了，这个最好是和监控节点分离开，不要部署再同一台主机上<br />
+osd 的存储后端有两种： bluestore(据说性能比较好) filestore <code>bluestore</code> ==&gt; 数据直接写入磁盘，磁盘上没有文件系统 <code>filestore</code> ==&gt; 数据写入到磁盘中的文件系统中，数据直接以文件的形式存在</p>
+<p>这里选用 <code>bluestore</code> 进行存储部署</p>
+<p>首先安装软件包<br />
+<code>yum install ceph-common ceph-base ceph-osd python3-rbd ceph-common</code> ceph 的客户端需要安装 ceph client packge<br />
+如果完整安装完成之后会有一个 <code>ceph-volume</code> 的命令</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"># 这一步需要一个空的分区</span><br><span class="line"># 将监控节点的配置文件 &#x2F;etc&#x2F;ceph&#x2F;ceph.conf 和 osd 密钥 &#x2F;var&#x2F;lib&#x2F;ceph&#x2F;bootstrap-osd&#x2F;ceph.keyring 复制到本机对应的目录</span><br><span class="line"># 这一步是为了让本机能够通过配置文件知道监控节点的地址，以及通过密钥与监控节点进行通信</span><br><span class="line"># 之后通过 ceph-volume 创建lvm卷，并自动创建 osd</span><br><span class="line">ceph-volume lvm create --data &#x2F;dev&#x2F;sdc1</span><br></pre></td></tr></table></figure>
+<p>回到监控节点: 运行 <code>ceph -s</code><br />
+可以看到输出中已经有了 osd,这里在三台机器上部署了 ceph-volume,因此创建了三个 osd</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">[root@cloud1 ceph]# ceph -s</span><br><span class="line">  cluster:</span><br><span class="line">    id:     a31d0c20-a7f0-43ab-92ca-8a4a7d88ef68</span><br><span class="line">    health: HEALTH_WARN</span><br><span class="line">            1 monitors have not enabled msgr2</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">  services:</span><br><span class="line">    mon: 1 daemons, quorum cloud1 (age 2h)</span><br><span class="line">    mgr: cloud1(active, since 6h)</span><br><span class="line">    osd: 3 osds: 3 up (since 13m), 3 in (since 13m)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">  data:</span><br><span class="line">    pools:   0 pools, 0 pgs</span><br><span class="line">    objects: 0 objects, 0 B</span><br><span class="line">    usage:   3.0 GiB used, 279 GiB &#x2F; 282 GiB avail</span><br><span class="line">    pgs:</span><br></pre></td></tr></table></figure>
+<h1 id="四部署元数据服务器-ceph-mds">四、部署元数据服务器 ceph-mds</h1>
+<h2 id="创建-keyring-文件夹">1. 创建 keyring 文件夹</h2>
+<p>这里的 id 不可以是纯数字，可以使用主机名,例如 <code>cloud1</code> <code>mkdir -p /var/lib/ceph/mds/{cluster-name}-{id}</code><br />
+示例： <code>mkdir -p /var/lib/ceph/mds/ceph-cloud1</code> ## 2. 创建 keyring 默认集群名是 ceph,id 是上面的文件夹名中 id <code>sudo -s ceph ceph-authtool --create-keyring /var/lib/ceph/mds/{cluster-name}-{id}/keyring --gen-key -n mds.{id}</code> ## 3. 将 keyring 添加到 mon 中 通过密钥认证监控节点<br />
+<code>ceph auth add mds.{id} osd "allow rwx" mds "allow" mon "allow profile mds" -i /var/lib/ceph/mds/{cluster}-{id}/keyring</code></p>
+<h2 id="启动-ceph-mds-服务">4. 启动 ceph-mds 服务</h2>
+<p>需要保证 /var/lib/ceph/mds/{cluster}-{id}/keyring 文件的所有者和所有者组是 ceph:ceph，如果不是，可以通过 <code>chown ceph:ceph /var/lib/ceph/mds/{cluster}-{id}/keyring</code> 来修改<br />
+<code>systemctl start ceph-mds@{id}</code> 此处的 id 为上面的id，应该是主机名</p>
+<p>示例： <code>systemctl start ceph-mds@cloud1</code></p>
+<p>或者使用手动方法（不推荐）：<br />
+<code>ceph-mds --cluster {cluster-name} -i {id} -m {mon-hostname}:{mon-port} [-f]</code></p>
+<h1 id="五到此完成">五、到此完成</h1>
+<p>** 下面内容不需要 ** ---------</p>
+<h1 id="六创建-ceph-fs-system">六、创建 ceph fs system</h1>
+<h2 id="创建-osd-pool">5.1 创建 osd pool</h2>
+<p>一个 pool 存数据，一个存元数据</p>
+<p>pgnum 推荐64 、128 TODO 含义？？？ &gt; Generally, the metadata pool will have at most a few gigabytes of data. For this reason, a smaller PG count is usually recommended. 64 or 128 is commonly used in practice for large clusters.</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">[root@cloud1 ~]# ceph osd pool create cephfs_data 64</span><br><span class="line">pool &#39;cephfs_data&#39; created</span><br><span class="line">[root@cloud1 ~]# ceph osd pool create cephfs_metadata 64</span><br><span class="line">pool &#39;cephfs_metadata&#39; created</span><br></pre></td></tr></table></figure>
+<h2 id="创建-ceph-fs">5.2 创建 ceph fs</h2>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"># ceph fs new &lt;fs_name&gt; &lt;metadata&gt; &lt;data&gt; </span><br><span class="line">[root@cloud1 ~]# ceph fs new cephfs cephfs_metadata cephfs_data</span><br><span class="line">new fs with metadata pool 2 and data pool 1</span><br><span class="line"># 使用 ceph fs ls 查看</span><br><span class="line">[root@cloud1 ~]# ceph fs ls</span><br><span class="line">name: cephfs, metadata pool: cephfs_metadata, data pools: [cephfs_data ]</span><br></pre></td></tr></table></figure>
+<h2 id="挂载-cephfs-到本地目录测试使用">5.3 挂载 cephfs 到本地目录，测试使用</h2>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">#这里复制了 admin 的密钥 即 &#x2F;etc&#x2F;ceph&#x2F;ceph.client.admin.keyring</span><br><span class="line">mkdir ~&#x2F;cephfs_dir</span><br><span class="line">mount -t ceph :&#x2F; ~&#x2F;cephfs_dir&#x2F; -o name&#x3D;admin</span><br></pre></td></tr></table></figure>
+<p>这样就可以通过 cephfs_dir 向cephfs中写文件了</p>
+<h2 id="验证安装">5.4 验证安装</h2>
+<p>向 cephfs_dir 中写入文件<br />
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line">ceph -s </span><br><span class="line"></span><br><span class="line"></span><br><span class="line">  cluster:</span><br><span class="line">    id:     a31d0c20-a7f0-43ab-92ca-8a4a7d88ef68</span><br><span class="line">    health: HEALTH_OK</span><br><span class="line"> </span><br><span class="line">  services:</span><br><span class="line">    mon: 1 daemons, quorum cloud1 (age 32m)</span><br><span class="line">    mgr: cloud1(active, since 20h)</span><br><span class="line">    mds: cephfs:1 &#123;0&#x3D;mds0&#x3D;up:active&#125; 2 up:standby  # 这里的 0&#x3D;mds0&#x3D;up:active 表示第一个 mds0 active 启用了，不是表示没有mds !!</span><br><span class="line">    osd: 3 osds: 3 up (since 21h), 3 in (since 21h)</span><br><span class="line"> </span><br><span class="line">  data:</span><br><span class="line">    pools:   2 pools, 128 pgs</span><br><span class="line">    objects: 141 objects, 80 MiB</span><br><span class="line">    usage:   3.3 GiB used, 278 GiB &#x2F; 282 GiB avail</span><br><span class="line">    pgs:     128 active+clean</span><br><span class="line"> </span><br><span class="line">  io:</span><br><span class="line">    client:   525 KiB&#x2F;s wr, 0 op&#x2F;s rd, 0 op&#x2F;s wr</span><br></pre></td></tr></table></figure></p>
+<h1 id="六ceph-测试性能">六、ceph 测试性能</h1>
+<p>参考下面网址：</p>
+<p>https://ivanzz1001.github.io/records/post/ceph/2017/07/28/ceph-benchmark</p>
+<p>https://juejin.im/entry/5ab347daf265da238d509ed5</p>
+<p>openstack 官方生产环境 ceph 集群架构 <a href="https://docs.openstack.org/openstack-ansible/latest/user/ceph/full-deploy.html" target="_blank" rel="noopener">https://docs.openstack.org/openstack-ansible/latest/user/ceph/full-deploy.html</a></p>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2020/05/08/nqueens/" rel="prev" title="leetcode 51 N 皇后">
+      <i class="fa fa-chevron-left"></i> leetcode 51 N 皇后
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2020/08/09/gitbook-usage/" rel="next" title="gitbook 使用体验">
+      gitbook 使用体验 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#一部署监控节点-ceph-mon"><span class="nav-number">1.</span> <span class="nav-text">一、部署监控节点 ceph-mon</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#安装必要的软件包"><span class="nav-number">1.1.</span> <span class="nav-text">1. 安装必要的软件包</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#生成-fsid修改配置文件"><span class="nav-number">1.2.</span> <span class="nav-text">2. 生成 fsid，修改配置文件</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#生成-keyring-密钥启动ceph-mon服务"><span class="nav-number">1.3.</span> <span class="nav-text">3. 生成 keyring 密钥,启动ceph-mon服务</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#创建一个-keyring-文件"><span class="nav-number">1.3.1.</span> <span class="nav-text">3.1. 创建一个 keyring 文件</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#创建-administrator-keyring"><span class="nav-number">1.3.2.</span> <span class="nav-text">3.2. 创建 administrator keyring</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#创建一个-bootstrap-osd-keyring"><span class="nav-number">1.3.3.</span> <span class="nav-text">3.3. 创建一个 bootstrap-osd keyring</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#把密钥添加到-ceph.mon.keyring-中以允许监控服务拥有上述用户权限"><span class="nav-number">1.3.4.</span> <span class="nav-text">3.4. 把密钥添加到 ceph.mon.keyring 中，以允许监控服务拥有上述用户权限</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#修改-ceph.mon.keyring-文件所有者及所有者组因为ceph以ceph用户运行所以要保证有读取权限"><span class="nav-number">1.3.5.</span> <span class="nav-text">3.5. 修改 ceph.mon.keyring 文件所有者及所有者组（因为ceph以ceph用户运行，所以要保证有读取权限）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#生成-monmap-文件"><span class="nav-number">1.3.6.</span> <span class="nav-text">3.6. 生成 monmap 文件</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#创建一个-ceph-mon-工作目录"><span class="nav-number">1.3.7.</span> <span class="nav-text">3.7. 创建一个 ceph-mon 工作目录</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#创建新的-monitor-fs"><span class="nav-number">1.3.8.</span> <span class="nav-text">3.8. 创建新的 monitor fs</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#启动-ceph-mon"><span class="nav-number">1.3.9.</span> <span class="nav-text">3.9. 启动 ceph-mon</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#验证-ceph-mon-是否正常"><span class="nav-number">1.3.10.</span> <span class="nav-text">3.10 验证 ceph-mon 是否正常</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#二-部署管理节点-ceph-mgr"><span class="nav-number">2.</span> <span class="nav-text">二、 部署管理节点 ceph-mgr</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#添加-mgr-权限"><span class="nav-number">2.1.</span> <span class="nav-text">1. 添加 mgr 权限</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#启动-mgr-服务"><span class="nav-number">2.2.</span> <span class="nav-text">2. 启动 mgr 服务</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#三部署存储节点-ceph-osd"><span class="nav-number">3.</span> <span class="nav-text">三、部署存储节点 ceph-osd</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#四部署元数据服务器-ceph-mds"><span class="nav-number">4.</span> <span class="nav-text">四、部署元数据服务器 ceph-mds</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#创建-keyring-文件夹"><span class="nav-number">4.1.</span> <span class="nav-text">1. 创建 keyring 文件夹</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#启动-ceph-mds-服务"><span class="nav-number">4.2.</span> <span class="nav-text">4. 启动 ceph-mds 服务</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#五到此完成"><span class="nav-number">5.</span> <span class="nav-text">五、到此完成</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#六创建-ceph-fs-system"><span class="nav-number">6.</span> <span class="nav-text">六、创建 ceph fs system</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#创建-osd-pool"><span class="nav-number">6.1.</span> <span class="nav-text">5.1 创建 osd pool</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#创建-ceph-fs"><span class="nav-number">6.2.</span> <span class="nav-text">5.2 创建 ceph fs</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#挂载-cephfs-到本地目录测试使用"><span class="nav-number">6.3.</span> <span class="nav-text">5.3 挂载 cephfs 到本地目录，测试使用</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#验证安装"><span class="nav-number">6.4.</span> <span class="nav-text">5.4 验证安装</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#六ceph-测试性能"><span class="nav-number">7.</span> <span class="nav-text">六、ceph 测试性能</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="Kele"
+      src="/images/avatar.jpg">
+  <p class="site-author-name" itemprop="name">Kele</p>
+  <div class="site-description" itemprop="description">菜鸡</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">98</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">51</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/kele1997" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;kele1997" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:2363618563@qq.com" title="E-Mail → mailto:2363618563@qq.com" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Kele</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-area"></i>
+    </span>
+    <span title="站点总字数">223k</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+    <span title="站点阅读时长">3:22</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动
+  </div>
+
+
+  <script src='https://cdnjs.cloudflare.com/ajax/libs/viz.js/1.7.1/viz.js'></script>
+  <script>
+    String.prototype.replaceAll = function(search, replacement) {
+      var target = this;
+      return target.split(search).join(replacement);
+    };
+
+    let vizObjects = document.querySelectorAll('.graphviz')
+
+    for (let item of vizObjects) {
+      let svg = undefined
+      try {
+        svg = Viz(item.textContent.replaceAll('–', '--'), 'svg')
+      } catch(e) {
+        svg = `<pre class="error">${e}</pre>`
+      }
+      item.outerHTML = svg
+    }
+  </script>
+
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+  
+
+</body>
+</html>

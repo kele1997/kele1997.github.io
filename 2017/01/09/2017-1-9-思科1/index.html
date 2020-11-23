@@ -1,0 +1,594 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 4.2.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+  <meta name="google-site-verification" content="UA-100684831-1">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"kele1997.github.io","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="路由器 TPlink 思科  ARP协议 ip地址 网络层 数据帧必须包含目的的mac地址  arp的工作原理 理解ARP的缓存标的作用 sw &gt;arp &gt;mac  src 源 rcv接受 mac 媒体介质访问 route map 路由映射表 ## apr数据包格式 ethernet-II（以太网二帧） arp fcs">
+<meta property="og:type" content="article">
+<meta property="og:title" content="思科学习（1）">
+<meta property="og:url" content="https://kele1997.github.io/2017/01/09/2017-1-9-%E6%80%9D%E7%A7%911/index.html">
+<meta property="og:site_name" content="可乐的博客">
+<meta property="og:description" content="路由器 TPlink 思科  ARP协议 ip地址 网络层 数据帧必须包含目的的mac地址  arp的工作原理 理解ARP的缓存标的作用 sw &gt;arp &gt;mac  src 源 rcv接受 mac 媒体介质访问 route map 路由映射表 ## apr数据包格式 ethernet-II（以太网二帧） arp fcs">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2017-01-09T13:07:37.000Z">
+<meta property="article:modified_time" content="2020-11-23T10:12:28.217Z">
+<meta property="article:author" content="Kele">
+<meta property="article:tag" content="思科">
+<meta property="article:tag" content="学习使我快乐">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="https://kele1997.github.io/2017/01/09/2017-1-9-%E6%80%9D%E7%A7%911/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>思科学习（1） | 可乐的博客</title>
+  
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-100684831-1"></script>
+    <script>
+      if (CONFIG.hostname === location.hostname) {
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', 'UA-100684831-1');
+      }
+    </script>
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">可乐的博客</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+        <li class="menu-item menu-item-commonweal">
+
+    <a href="/404/" rel="section"><i class="fa fa-heartbeat fa-fw"></i>公益 404</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://kele1997.github.io/2017/01/09/2017-1-9-%E6%80%9D%E7%A7%911/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.jpg">
+      <meta itemprop="name" content="Kele">
+      <meta itemprop="description" content="菜鸡">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="可乐的博客">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          思科学习（1）
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2017-01-09 13:07:37" itemprop="dateCreated datePublished" datetime="2017-01-09T13:07:37+00:00">2017-01-09</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2020-11-23 10:12:28" itemprop="dateModified" datetime="2020-11-23T10:12:28+00:00">2020-11-23</time>
+              </span>
+
+          <br>
+            <span class="post-meta-item" title="本文字数">
+              <span class="post-meta-item-icon">
+                <i class="far fa-file-word"></i>
+              </span>
+                <span class="post-meta-item-text">本文字数：</span>
+              <span>2.6k</span>
+            </span>
+            <span class="post-meta-item" title="阅读时长">
+              <span class="post-meta-item-icon">
+                <i class="far fa-clock"></i>
+              </span>
+                <span class="post-meta-item-text">阅读时长 &asymp;</span>
+              <span>2 分钟</span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <blockquote>
+<p>路由器 TPlink 思科</p>
+</blockquote>
+<h1 id="arp协议">ARP协议</h1>
+<p>ip地址 网络层 数据帧必须包含目的的mac地址</p>
+<blockquote>
+<p>arp的工作原理<br />
+理解ARP的缓存标的作用 sw &gt;arp &gt;mac</p>
+</blockquote>
+<p>src 源 rcv接受 mac 媒体介质访问 route map 路由映射表<br />
+## apr数据包格式 ethernet-II（以太网二帧） arp fcs</p>
+<p><strong>apr报文不能穿越路由器，不能被转发到其他广播域中，也就是不能穿过广播域</strong></p>
+<h2 id="apr缓存">apr缓存</h2>
+<p>apr -a 两个主机通信需要有彼此的缓存表，否则需要apr解析 ## apr代理 <strong>位于不同网络的网络设备在不配置网关的情况下，用arp代理实现通信</strong> ## 免费apr &gt;ip获取的两种方式，手动，DHCP自动获取<br />
+<strong>免费arp可以用来探测ip地址是否冲突</strong> <strong>两种ip获取一样，谁先开机，谁能上网，先开机的设备发送报文，arp缓存表，其余的设备无法上网</strong></p>
+<h2 id="总结">总结</h2>
+<p>什么时候产生arp request</p>
+<table style="width:15%;">
+<colgroup>
+<col style="width: 15%" />
+</colgroup>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">优雅的分割线</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"># 传输层协议 &gt;主机端到端连通性，最常见的两个协议是tcp udp</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">## tcp * port（端口号）qq 迅雷自动的动态的端口号 * 传输层主要体现端口号 * 协议 端口 * ftp 21 20 * http 80 * telnet 23 * smtp 25 <strong>端口号用来区分不同网络</strong> ## tcp头部 &gt;上面是默认的端口号，但是可以更改 * ip header tcp header data * 缓存用来调整出口和入口大小的不平衡</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">## tcp建立连接的过程 * 三次握手建立可靠连接 * <strong>建立连接 之前什么也干不了</strong> * syn建立连接 ## tcp流量控制 ## tcp关闭连接 * fin关闭连接 ## udp * 面向无连接的传输层协议，传输可靠性差 * 允许丢包，无确认机制 ## udp头部结构 ## udp传输过程 * <strong>主要用来传输语音流和视频流 在线方式的 live 实时的居多</strong> 如果使用tcp会卡到飞起 * udp不提供重传机制，占用资源小，处理效率高 * 一些时效敏感的用udp 延迟是可以接受的 tcp延迟太高 ## 总结 * <strong>tcp的确认标识位用来检测完整性</strong> * 那些标识位参与了三次握手？ * 语音有确认机制，虽然质量不好，但是完整</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"># 数据转发过程 ## 数据转发过程概念 * 主机 arp rta（路由） 检测路由表（那条线路最好） 另一台路由 （与另一边相同） ## ip封装 ## 查找路由 * pc也有路由表 cmd route print * 子网掩码 network mask ## 以太网的封装 * type &gt;&gt;&gt;&gt;&gt;用来说明是arp 还是ip ## 数据帧的转发过程，数据包的封装，解封装</td>
+</tr>
+</tbody>
+</table>
+<h1 id="子网掩码的划分">子网掩码的划分</h1>
+<blockquote>
+<p>ip协议的工作机制 ip报文结构 公有私有结构</p>
+</blockquote>
+<h2 id="ip报文头部">ip报文头部</h2>
+<ul>
+<li>分片之后还会组装，会降低传输效率，所以尽可能的避免分片</li>
+<li>cos值表示等级0-7（等级标记一个字节）网络高的流量等级高 QoS</li>
+<li>迅雷等软件可以动态调整cos值，抢带宽，提高等级 ## ip编址</li>
+<li>网络地址的组成 网络位 主机位（。0） iPv4 2^32 ipv6 2^128地址范围</li>
+<li>广播地址的组成 网络位 主机位 （。255） ## 二进制，十进制 十六进制.................... 200-128-64 -8? 11001000 ## ip地址的分类 ABCDE类 ABC主要是单播地址 D类主要是用来组播 E类主要是保留，军队或者组织使用<br />
+各种网络的范围 1+1 2+2等等 ## ip地址的类型</li>
+<li>私有地址的类型 &gt; 私有地址的范围，私有地址只出现在内网，不会出现在公网</li>
+<li>特殊地址<br />
+&gt;主要是用来检测TCP协议 ping 127.0.0.1 127.0.0.1 -127.255.255.255 &gt;0.0.0.0 any &gt;255.255.255.255 广播 ## 网络通信 不同子网&gt;&gt; 不同广播域 &gt;&gt; 不能通信&gt;&gt;需要路由器 ## 默认子网掩码（区分网络大小）需要用连续的1和0组成 A类：255 0 0 0 18 B类：255 255 0 0 116 C类：255 255 255 0 124 ## 地址规划</li>
+<li>网络位不能改变</li>
+<li>ip地址 子网掩码 网络地址 主机数 可用主机数</li>
+<li>路由条目？ 全0子网 全1广播 ## 变长子网掩码（为了节约地址）</li>
+<li>子网掩码第四个8位的1决定了ip地址的第四个八位是否能变动 ## 变长子网掩码举例</li>
+<li>子网数目2^n n指1个个数</li>
+<li>有效主机数的计算</li>
+<li>子网号?</li>
+<li>广播号?</li>
+</ul>
+<p>例题 172.16.100.100/19(掩码位)255.255.224.0</p>
+<ol type="1">
+<li>2^19-16 96.0-127.255</li>
+<li>2^（32-19）-2</li>
+<li></li>
+</ol>
+<h2 id="无类域间路由">无类域间路由</h2>
+<ul>
+<li>汇总路由</li>
+<li>路由器的内存512M 1G 50% 70%崩溃</li>
+<li>简化路由表</li>
+<li>最长匹配原则（掩码最长）掩码越长，越精确（第一原则） ## 网关</li>
+<li>可以有多个网关 ## 生存实际 TTL 中国访问美国的网址，隐藏运营商，直接跳过，30跳内到达 ## 协议号</li>
+<li>子网掩码的作用</li>
+<li>ip报ttl字段作用 查看跳数 ，还可以防环</li>
+</ul>
+<h2 id="停电事故哈哈哈哈哈哈哈哈哈啊哈哈哈哈哈哈哈">停电事故哈哈哈哈哈哈哈哈哈啊哈哈哈哈哈哈哈</h2>
+<p>优雅的分割线2</p>
+<p>associate professional experter ## 常用图例 ## 思科设备的简单启动过 * 硬件自检 * 定位并加载思科ios系统文件 * 定位并运行配置文件 config.text配置文件 * 软件console * 软件Telnet /ssh v1 v2 * aux 电话线&gt;&gt;&gt;modem &gt;&gt;aux口 古老的方式 * 网管软件 sdm asdm 登录路由器 * E代表以太口 F指快速以太口 W指的是空槽 # 常用命令 &gt;enable<br />
+&gt;dialog 选择no<br />
+&gt;#模式用来查看 &gt;no ip duoman</p>
+<p>CCNA命令集</p>
+<pre><code>hostname 改名  （config#）  
+show version  显示版本啥的状态哈的   
+show history 查看历史     
+config 命令     
+ctrl+ shift +6  卡死的时候  
+shou terminal  
+terminal history size 10    10条  
+show history size  显示histor条数   
+show  terminal   
+banner  motd # 
+写正文
+\#
+用来写注意问题   
+sh ip int br   显示端口信息   
+int fa0/0   
+ip add   
+ip address 10.1.1.1.255.255.255.0   
+no shutdown   
+copy running-config start-config     
+show  run   
+show  start  
+不要轻易保存
+show clock 
+clock set ?  调整时间
+clock set 16:41:00 9 jan ?
+clock time zone gtm ?
+clock time zone gtm 8  调整时区
+先调整时区，然后在调整时间
+show flash   
+show ?
+.bin是ios文件，系统
+进入端口后，description  lan=to-r1-fa0/1   只是加了个描述
+
+    </code></pre>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/%E6%80%9D%E7%A7%91/" rel="tag"># 思科</a>
+              <a href="/tags/%E5%AD%A6%E4%B9%A0%E4%BD%BF%E6%88%91%E5%BF%AB%E4%B9%90/" rel="tag"># 学习使我快乐</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2016/12/30/%E8%B7%A8%E5%B9%B4%E5%8D%9A%E5%AE%A2/" rel="prev" title="写在前面的话">
+      <i class="fa fa-chevron-left"></i> 写在前面的话
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2017/01/10/2017-1-10-%E6%80%9D%E7%A7%912/" rel="next" title="思科学习（2）">
+      思科学习（2） <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#arp协议"><span class="nav-number">1.</span> <span class="nav-text">ARP协议</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#apr缓存"><span class="nav-number">1.1.</span> <span class="nav-text">apr缓存</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#总结"><span class="nav-number">1.2.</span> <span class="nav-text">总结</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#子网掩码的划分"><span class="nav-number">2.</span> <span class="nav-text">子网掩码的划分</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#ip报文头部"><span class="nav-number">2.1.</span> <span class="nav-text">ip报文头部</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#无类域间路由"><span class="nav-number">2.2.</span> <span class="nav-text">无类域间路由</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#停电事故哈哈哈哈哈哈哈哈哈啊哈哈哈哈哈哈哈"><span class="nav-number">2.3.</span> <span class="nav-text">停电事故哈哈哈哈哈哈哈哈哈啊哈哈哈哈哈哈哈</span></a></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="Kele"
+      src="/images/avatar.jpg">
+  <p class="site-author-name" itemprop="name">Kele</p>
+  <div class="site-description" itemprop="description">菜鸡</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">98</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">51</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/kele1997" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;kele1997" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:2363618563@qq.com" title="E-Mail → mailto:2363618563@qq.com" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Kele</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-area"></i>
+    </span>
+    <span title="站点总字数">223k</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+    <span title="站点阅读时长">3:22</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动
+  </div>
+
+
+  <script src='https://cdnjs.cloudflare.com/ajax/libs/viz.js/1.7.1/viz.js'></script>
+  <script>
+    String.prototype.replaceAll = function(search, replacement) {
+      var target = this;
+      return target.split(search).join(replacement);
+    };
+
+    let vizObjects = document.querySelectorAll('.graphviz')
+
+    for (let item of vizObjects) {
+      let svg = undefined
+      try {
+        svg = Viz(item.textContent.replaceAll('–', '--'), 'svg')
+      } catch(e) {
+        svg = `<pre class="error">${e}</pre>`
+      }
+      item.outerHTML = svg
+    }
+  </script>
+
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+  
+
+</body>
+</html>

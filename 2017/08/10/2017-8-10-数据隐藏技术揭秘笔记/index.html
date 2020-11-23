@@ -1,0 +1,546 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 4.2.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+  <meta name="google-site-verification" content="UA-100684831-1">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"kele1997.github.io","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="[TOC] # 数据隐藏技术揭秘笔记 ## 第一章 密写术的发展史 1.凯撒密码 2.摩斯密码 3.维吉尼亚密码 可以通过分析频率来破解，语言特征 123from pycipher import Vigenere as vsvs(&quot;密钥&quot;).encipher(&quot;明文&quot;)  #加密vs(&quot;密钥&quot;).decipher(&quot;密文&amp;quo">
+<meta property="og:type" content="article">
+<meta property="og:title" content="数据隐藏技术揭秘笔记">
+<meta property="og:url" content="https://kele1997.github.io/2017/08/10/2017-8-10-%E6%95%B0%E6%8D%AE%E9%9A%90%E8%97%8F%E6%8A%80%E6%9C%AF%E6%8F%AD%E7%A7%98%E7%AC%94%E8%AE%B0/index.html">
+<meta property="og:site_name" content="可乐的博客">
+<meta property="og:description" content="[TOC] # 数据隐藏技术揭秘笔记 ## 第一章 密写术的发展史 1.凯撒密码 2.摩斯密码 3.维吉尼亚密码 可以通过分析频率来破解，语言特征 123from pycipher import Vigenere as vsvs(&quot;密钥&quot;).encipher(&quot;明文&quot;)  #加密vs(&quot;密钥&quot;).decipher(&quot;密文&amp;quo">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://or4d8nhvk.bkt.clouddn.com/17-8-11/27198040.jpg">
+<meta property="article:published_time" content="2017-08-10T00:00:00.000Z">
+<meta property="article:modified_time" content="2020-11-23T10:12:28.217Z">
+<meta property="article:author" content="Kele">
+<meta property="article:tag" content="学习使我快乐">
+<meta property="article:tag" content="笔记">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://or4d8nhvk.bkt.clouddn.com/17-8-11/27198040.jpg">
+
+<link rel="canonical" href="https://kele1997.github.io/2017/08/10/2017-8-10-%E6%95%B0%E6%8D%AE%E9%9A%90%E8%97%8F%E6%8A%80%E6%9C%AF%E6%8F%AD%E7%A7%98%E7%AC%94%E8%AE%B0/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>数据隐藏技术揭秘笔记 | 可乐的博客</title>
+  
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-100684831-1"></script>
+    <script>
+      if (CONFIG.hostname === location.hostname) {
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', 'UA-100684831-1');
+      }
+    </script>
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">可乐的博客</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+        <li class="menu-item menu-item-commonweal">
+
+    <a href="/404/" rel="section"><i class="fa fa-heartbeat fa-fw"></i>公益 404</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://kele1997.github.io/2017/08/10/2017-8-10-%E6%95%B0%E6%8D%AE%E9%9A%90%E8%97%8F%E6%8A%80%E6%9C%AF%E6%8F%AD%E7%A7%98%E7%AC%94%E8%AE%B0/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.jpg">
+      <meta itemprop="name" content="Kele">
+      <meta itemprop="description" content="菜鸡">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="可乐的博客">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          数据隐藏技术揭秘笔记
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2017-08-10 00:00:00" itemprop="dateCreated datePublished" datetime="2017-08-10T00:00:00+00:00">2017-08-10</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2020-11-23 10:12:28" itemprop="dateModified" datetime="2020-11-23T10:12:28+00:00">2020-11-23</time>
+              </span>
+
+          <br>
+            <span class="post-meta-item" title="本文字数">
+              <span class="post-meta-item-icon">
+                <i class="far fa-file-word"></i>
+              </span>
+                <span class="post-meta-item-text">本文字数：</span>
+              <span>2.5k</span>
+            </span>
+            <span class="post-meta-item" title="阅读时长">
+              <span class="post-meta-item-icon">
+                <i class="far fa-clock"></i>
+              </span>
+                <span class="post-meta-item-text">阅读时长 &asymp;</span>
+              <span>2 分钟</span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>[TOC] # 数据隐藏技术揭秘笔记 ## 第一章 密写术的发展史 1.凯撒密码<br />
+2.摩斯密码<br />
+3.维吉尼亚密码 可以通过分析频率来破解，语言特征 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">from pycipher import Vigenere as vs</span><br><span class="line">vs(&quot;密钥&quot;).encipher(&quot;明文&quot;)  #加密</span><br><span class="line">vs(&quot;密钥&quot;).decipher(&quot;密文&quot;)  #解密</span><br></pre></td></tr></table></figure> <a href="http://planetcalc.com/2468/" target="_blank" rel="noopener">online</a> 思科的密码就是维吉尼亚的变种，所以有在线破解工具<br />
+4. 移位密码 5. 替换密码 des标准加密 原文分组，每组8个字母 16轮移位和替换操作</p>
+<hr />
+<p>隐写<br />
+1.卡尔达诺栅格码 <a href="http://www.spammimic.com/" target="_blank" rel="noopener">spam minic</a><br />
+2.隐形墨水 缩影术 打印机跟踪点(interesting) <a href="http://www.eff.org/pages/list-printers-which-do-or-do-not-display-tracking-dots" target="_blank" rel="noopener">eff打印机跟踪点</a> 可以使用跟踪点解密工具解密<br />
+3.水印： &gt;数字水印，维护数字媒体文件的版权和防伪</p>
+<h2 id="第二章-数据隐藏简单练习4则">第二章 数据隐藏简单练习4则</h2>
+<blockquote>
+<p>word可以通过编辑属性插入作者名称，公司名称，关键词，标签和其他数据，这些数据叫做元数据</p>
+</blockquote>
+<p><strong>foca工具</strong>　扫描网站和在线服务查找元数据</p>
+<h3 id="在word中隐藏数据">2.1 在word中隐藏数据</h3>
+<p>批注、个人信息、水印、不可见内容、隐藏文字、定制的xml数据，hidden text隐藏文本选项<br />
+file-&gt;option-&gt;display-&gt;hidden text<br />
+另一个识别隐藏文字的方法是inspect document选项，file-&gt;info-&gt;check for issues-&gt;inspect doucument 文档检查器<br />
+i <strong>在白色背景上的白色文字</strong>　无法检测<br />
+word2010 的属性区域有更多隐藏信息的选项，tags author comment properties-&gt;advanced properties custom页签 才可以看到<br />
+### 2.2 图像元数据<br />
+&gt;BTK</p>
+<p>EXIF代表可交换图像文件格式，是很多媒体格式的标准，比如jpeg和tiff等，使用exiftools查看<br />
+### 2.3 移东设备数据隐藏 &gt;hiden it pro工具</p>
+<p>linux中以.开头的文件和目录都是i隐藏的,把文件移入隐藏分区，然后呢修改文件后缀</p>
+<h2 id="文件压缩工具的数据隐藏">2.4 文件压缩工具的数据隐藏</h2>
+<p><strong>可以自动恢复破损的压缩文件</strong> copy /b 1.jpg+mike.rar newimage.jpg</p>
+<h2 id="第三章-隐写术">第三章 隐写术</h2>
+<p>数字隐写技术 stools tcp通道 camoutflags jphs hydan invisiblesecrets cnc alureon<br />
+### 3.2 隐写技术 隐藏信息的方法有两大类，插入(文件格式的空白部分，文件制作工具的标识)和替换(修改字节或者调整)，例如lsb隐写<br />
+#### 3.2.1 插入方法 1.追加插入法<br />
+文件末尾附加数据 jpeg的结尾是0xff 0xd9 2.前置插入法 插入批注内容的文件都有可能被插入数据之中，html和jpeg文件都容易被嵌入数据，jpeg最多插入65533个字节的批注<br />
+ffd8 soi 图像开始 ffe0 app0 ap标识符 sof0 ffc0 框架开始（宽度高度） sos ffda 扫描开始 eoi ffd9 文件结束<br />
+jphideandseek oxff oxe0与oxffoxco之间插入数据<br />
+#### 3.2.2 修改方法 修改文件的最低有效位，生成的图像有了渲染效果<br />
+lsb隐写，适合24位的图像文件，lsb同样适用于8位的bmp图像<br />
+#### 3.2.3 在pdf文件中隐藏信息<br />
+wbstego4open把文件写到bmp txt html pdf中，这个程序使用了插入法和lsb修改法 20 09 组成的8位字节，非常有可能是这种隐写<br />
+密码保护防止打印和防止pdf的文件，数字证书防止文件内容被修改<br />
+#### 3.2.4 在可执行文件中隐藏信息 hydan 工具可以在可执行文件里面隐藏数据<br />
+一个jpeg 文件17个字节隐藏一个字节数据，二进制文件150个字节隐藏一个字节<br />
+#### 3.2.5 在html文件中隐藏信息 snow在ascii文本末尾隐藏数据，可以通过插入制表符和空格是数据在浏览器不可见<br />
+snow最多添加7个空格，使每八列插入三位，文件中有许多制表符和空格<br />
+<a href="http://fog.misty.com/perry/ccs/snow/snow/snow.html" target="_blank" rel="noopener">snow</a> html在线加解密<br />
+### 3.3 隐写分析<br />
+hiderman 隐写程序会在载体文件末尾追加三个cdn的ascii码,隐写分析扫描工具有签名库<br />
+#### 3.3.1 异常分析 查看文件大小 或者简单的cksum校验和工具<br />
+有的隐写工具不改变文件的大小和创建时间，只要查看文件的校验和，就可以发现了<br />
+#### 3.3.2 隐写分析工具<br />
+nothing #### 3.3.3 免费软件<br />
+stegspy 需要手动把文件夹里面的dll加入系统文件夹，并且注册<br />
+stegdetect jpeg隐写 jsteg jphide outguess invisible secrets f5 appendx camouflage 等隐藏的信息<br />
+jpeg和mpeg使用离散余弦变化<br />
+<code>stegdetect -tjopi -s10 *.jpg</code></p>
+<h2 id="第四章-多媒体中的数据隐藏">第四章 多媒体中的数据隐藏</h2>
+<h3 id="数字音频中的数据隐藏">4.2 数字音频中的数据隐藏</h3>
+<p>人类听觉系统只能感知相对相位，无法感知绝对相位。就是说只能通过两种不同音量的音频<br />
+#### 4.2.1 简单音频文件嵌入技术 改变样本值的最低有效位least significant bit lsb只会略微影响模拟信号的效果<br />
+<img src="http://or4d8nhvk.bkt.clouddn.com/17-8-11/27198040.jpg" /> 音频类型 调制方法 声道个数 采样频率<br />
+奈奎斯特定理 脉冲编码调制<br />
+s-tools steanalyst分析音频图像的波形 ,音频也存在lsb隐写<br />
+#### 4.2.3 lsb波形数据隐写的隐写分析<br />
+检测lsb波形文件数据的隐藏关键是检查波形文件的最低有效位组成的是有意义的信息还是随机噪音<br />
+#### 4.2.4 高级的音频文件数据隐藏 MP3stego 数据隐藏在MP3文件奇偶校验快中，载荷文件不能太大，嵌入率大约是0.1%<br />
+#### 4.2.5 音频文件数据隐藏小结 ### 4.3数字视频文件中的数据隐藏 msu stego 运动补偿压缩视频格式或者mpegx格式，去除冗余信息<br />
+能够在全动态视频中隐藏信息 能够在视频帧中冗余地嵌入数据<br />
+tcstego隐写 可以把truecrypt容器隐写到mp4格式中</p>
+<h2 id="第五章-android移动设备中的数据隐藏">第五章 android移动设备中的数据隐藏</h2>
+<p>imghid and reveal android 应用针对jpeg，iphone针对png文件的数据隐藏</p>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/%E5%AD%A6%E4%B9%A0%E4%BD%BF%E6%88%91%E5%BF%AB%E4%B9%90/" rel="tag"># 学习使我快乐</a>
+              <a href="/tags/%E7%AC%94%E8%AE%B0/" rel="tag"># 笔记</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2017/08/09/2017-8-9-leetcodelearning/" rel="prev" title="2017-8-9-leetcodelearning">
+      <i class="fa fa-chevron-left"></i> 2017-8-9-leetcodelearning
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2017/08/12/2017-8-12-xssnotebook/" rel="next" title="xss学习笔记">
+      xss学习笔记 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#第二章-数据隐藏简单练习4则"><span class="nav-number">1.</span> <span class="nav-text">第二章 数据隐藏简单练习4则</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#在word中隐藏数据"><span class="nav-number">1.1.</span> <span class="nav-text">2.1 在word中隐藏数据</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#文件压缩工具的数据隐藏"><span class="nav-number">2.</span> <span class="nav-text">2.4 文件压缩工具的数据隐藏</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#第三章-隐写术"><span class="nav-number">3.</span> <span class="nav-text">第三章 隐写术</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#第四章-多媒体中的数据隐藏"><span class="nav-number">4.</span> <span class="nav-text">第四章 多媒体中的数据隐藏</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#数字音频中的数据隐藏"><span class="nav-number">4.1.</span> <span class="nav-text">4.2 数字音频中的数据隐藏</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#第五章-android移动设备中的数据隐藏"><span class="nav-number">5.</span> <span class="nav-text">第五章 android移动设备中的数据隐藏</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="Kele"
+      src="/images/avatar.jpg">
+  <p class="site-author-name" itemprop="name">Kele</p>
+  <div class="site-description" itemprop="description">菜鸡</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">98</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">51</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/kele1997" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;kele1997" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:2363618563@qq.com" title="E-Mail → mailto:2363618563@qq.com" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Kele</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-area"></i>
+    </span>
+    <span title="站点总字数">223k</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+    <span title="站点阅读时长">3:22</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动
+  </div>
+
+
+  <script src='https://cdnjs.cloudflare.com/ajax/libs/viz.js/1.7.1/viz.js'></script>
+  <script>
+    String.prototype.replaceAll = function(search, replacement) {
+      var target = this;
+      return target.split(search).join(replacement);
+    };
+
+    let vizObjects = document.querySelectorAll('.graphviz')
+
+    for (let item of vizObjects) {
+      let svg = undefined
+      try {
+        svg = Viz(item.textContent.replaceAll('–', '--'), 'svg')
+      } catch(e) {
+        svg = `<pre class="error">${e}</pre>`
+      }
+      item.outerHTML = svg
+    }
+  </script>
+
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+  
+
+</body>
+</html>

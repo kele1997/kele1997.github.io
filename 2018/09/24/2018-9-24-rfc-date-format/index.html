@@ -1,0 +1,482 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 4.2.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+  <meta name="google-site-verification" content="UA-100684831-1">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"kele1997.github.io","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="RFC 文档时间格式的阅读方法 群里突然有小伙伴问起 rfc 822&#x2F;2822 时间格式，瞬间百度了一下，然后就决定了google一下，搜索了官方的RFC文档，耐心地思考了一下RFC时间格式的阅读方法,做个笔记吧！ RFC 2822 date format 以 RFC 2822 时间格式做个例子: 文档位置 php中的时间格式（参考对照） 12345678910111213141516171819">
+<meta property="og:type" content="article">
+<meta property="og:title" content="RFC 文档时间格式的阅读方法">
+<meta property="og:url" content="https://kele1997.github.io/2018/09/24/2018-9-24-rfc-date-format/index.html">
+<meta property="og:site_name" content="可乐的博客">
+<meta property="og:description" content="RFC 文档时间格式的阅读方法 群里突然有小伙伴问起 rfc 822&#x2F;2822 时间格式，瞬间百度了一下，然后就决定了google一下，搜索了官方的RFC文档，耐心地思考了一下RFC时间格式的阅读方法,做个笔记吧！ RFC 2822 date format 以 RFC 2822 时间格式做个例子: 文档位置 php中的时间格式（参考对照） 12345678910111213141516171819">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2018-09-24T20:57:35.000Z">
+<meta property="article:modified_time" content="2020-11-23T10:12:28.221Z">
+<meta property="article:author" content="Kele">
+<meta property="article:tag" content="rfc">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="https://kele1997.github.io/2018/09/24/2018-9-24-rfc-date-format/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>RFC 文档时间格式的阅读方法 | 可乐的博客</title>
+  
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-100684831-1"></script>
+    <script>
+      if (CONFIG.hostname === location.hostname) {
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', 'UA-100684831-1');
+      }
+    </script>
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">可乐的博客</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+        <li class="menu-item menu-item-commonweal">
+
+    <a href="/404/" rel="section"><i class="fa fa-heartbeat fa-fw"></i>公益 404</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://kele1997.github.io/2018/09/24/2018-9-24-rfc-date-format/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.jpg">
+      <meta itemprop="name" content="Kele">
+      <meta itemprop="description" content="菜鸡">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="可乐的博客">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          RFC 文档时间格式的阅读方法
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2018-09-24 20:57:35" itemprop="dateCreated datePublished" datetime="2018-09-24T20:57:35+00:00">2018-09-24</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2020-11-23 10:12:28" itemprop="dateModified" datetime="2020-11-23T10:12:28+00:00">2020-11-23</time>
+              </span>
+
+          <br>
+            <span class="post-meta-item" title="本文字数">
+              <span class="post-meta-item-icon">
+                <i class="far fa-file-word"></i>
+              </span>
+                <span class="post-meta-item-text">本文字数：</span>
+              <span>2k</span>
+            </span>
+            <span class="post-meta-item" title="阅读时长">
+              <span class="post-meta-item-icon">
+                <i class="far fa-clock"></i>
+              </span>
+                <span class="post-meta-item-text">阅读时长 &asymp;</span>
+              <span>2 分钟</span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h1 id="rfc-文档时间格式的阅读方法">RFC 文档时间格式的阅读方法</h1>
+<p>群里突然有小伙伴问起 rfc 822/2822 时间格式，瞬间百度了一下，然后就决定了google一下，搜索了官方的RFC文档，耐心地思考了一下RFC时间格式的阅读方法,做个笔记吧！</p>
+<h2 id="rfc-2822-date-format">RFC 2822 date format</h2>
+<p>以 RFC 2822 时间格式做个例子: <a href="https://tools.ietf.org/html/rfc2822" target="_blank" rel="noopener">文档位置</a><br />
+<a href="http://php.net/manual/zh/class.datetime.php" target="_blank" rel="noopener">php中的时间格式（参考对照）</a></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br></pre></td><td class="code"><pre><span class="line">3.3. Date and Time Specification</span><br><span class="line"></span><br><span class="line">   Date and time occur in several header fields.  This section specifies</span><br><span class="line">   the syntax for a full date and time specification.  Though folding</span><br><span class="line">   white space is permitted throughout the date-time specification, it</span><br><span class="line">   is RECOMMENDED that a single space be used in each place that FWS</span><br><span class="line">   appears (whether it is required or optional); some older</span><br><span class="line">   implementations may not interpret other occurrences of folding white</span><br><span class="line">   space correctly.</span><br><span class="line"></span><br><span class="line">date-time       &#x3D;       [ day-of-week &quot;,&quot; ] date FWS time [CFWS]  #日期-时间的格式是：  [周几，（可选）] 日期 空白符 时间 空白符</span><br><span class="line"></span><br><span class="line">day-of-week     &#x3D;       ([FWS] day-name) &#x2F; obs-day-of-week  #以前叫做 day-of-week，现在废弃，改为下面的 day-name </span><br><span class="line"></span><br><span class="line">day-name        &#x3D;       &quot;Mon&quot; &#x2F; &quot;Tue&quot; &#x2F; &quot;Wed&quot; &#x2F; &quot;Thu&quot; &#x2F; #周几</span><br><span class="line">                        &quot;Fri&quot; &#x2F; &quot;Sat&quot; &#x2F; &quot;Sun&quot;</span><br><span class="line"></span><br><span class="line">date            &#x3D;       day month year  #日期 天 月 年，用空格隔开</span><br><span class="line"></span><br><span class="line">year            &#x3D;       4*DIGIT &#x2F; obs-year  #日期种的年是一个4位数，这个已经废弃，因为包含在上面了</span><br><span class="line"></span><br><span class="line">month           &#x3D;       (FWS month-name FWS) &#x2F; obs-month  #月份数，前后都有空白字符，已经废弃，改为下面的month-name了</span><br><span class="line"></span><br><span class="line">month-name      &#x3D;       &quot;Jan&quot; &#x2F; &quot;Feb&quot; &#x2F; &quot;Mar&quot; &#x2F; &quot;Apr&quot; &#x2F; #月份</span><br><span class="line">                        &quot;May&quot; &#x2F; &quot;Jun&quot; &#x2F; &quot;Jul&quot; &#x2F; &quot;Aug&quot; &#x2F;</span><br><span class="line">                        &quot;Sep&quot; &#x2F; &quot;Oct&quot; &#x2F; &quot;Nov&quot; &#x2F; &quot;Dec&quot;</span><br><span class="line"></span><br><span class="line">day             &#x3D;       ([FWS] 1*2DIGIT) &#x2F; obs-day  #天，一个2位整数，已经废弃，包含在date中</span><br><span class="line"></span><br><span class="line">time            &#x3D;       time-of-day FWS zone #时间的格式是： 当日时间 空格 时区</span><br><span class="line"></span><br><span class="line">time-of-day     &#x3D;       hour &quot;:&quot; minute [ &quot;:&quot; second ]  # 当日时间 格式是: 小时:分钟:[秒(可选)]</span><br><span class="line"></span><br><span class="line">hour            &#x3D;       2DIGIT &#x2F; obs-hour #小时 2位整数，已经废弃，被包含在上面</span><br><span class="line"></span><br><span class="line">minute          &#x3D;       2DIGIT &#x2F; obs-minute # 分钟，2位整数，已经废弃，被包含在上面了</span><br><span class="line"></span><br><span class="line">second          &#x3D;       2DIGIT &#x2F; obs-second #秒，2位整数，已经废弃，被包含在上面了</span><br><span class="line"></span><br><span class="line">zone            &#x3D;       (( &quot;+&quot; &#x2F; &quot;-&quot; ) 4DIGIT) &#x2F; obs-zone #时区，带加减符号的4位整数，已经废弃，包含在上面了</span><br></pre></td></tr></table></figure>
+<p>随手看一手php文档中的时间格式:<br />
+<code>const string RFC2822 = "D, d M Y H:i:s O" ;</code> D 代表的是Day of week,d表示 day,M表示Month,Y表示Year,H表示Hour,i表示minute,s表示second,O表示Zone<br />
+&gt;Mon, 15 Aug 2005 15:52:01 +0000 上面就是一个 RFC 2822时间的样例</p>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/rfc/" rel="tag"># rfc</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2018/09/24/2018-9-24-climb-the-mountain/" rel="prev" title="爬泰山">
+      <i class="fa fa-chevron-left"></i> 爬泰山
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2018/10/10/sscap-error/" rel="next" title="sscap 关闭之后再次打开提示端口占用">
+      sscap 关闭之后再次打开提示端口占用 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#rfc-文档时间格式的阅读方法"><span class="nav-number">1.</span> <span class="nav-text">RFC 文档时间格式的阅读方法</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#rfc-2822-date-format"><span class="nav-number">1.1.</span> <span class="nav-text">RFC 2822 date format</span></a></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="Kele"
+      src="/images/avatar.jpg">
+  <p class="site-author-name" itemprop="name">Kele</p>
+  <div class="site-description" itemprop="description">菜鸡</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">98</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">51</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/kele1997" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;kele1997" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:2363618563@qq.com" title="E-Mail → mailto:2363618563@qq.com" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Kele</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-area"></i>
+    </span>
+    <span title="站点总字数">223k</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+    <span title="站点阅读时长">3:22</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动
+  </div>
+
+
+  <script src='https://cdnjs.cloudflare.com/ajax/libs/viz.js/1.7.1/viz.js'></script>
+  <script>
+    String.prototype.replaceAll = function(search, replacement) {
+      var target = this;
+      return target.split(search).join(replacement);
+    };
+
+    let vizObjects = document.querySelectorAll('.graphviz')
+
+    for (let item of vizObjects) {
+      let svg = undefined
+      try {
+        svg = Viz(item.textContent.replaceAll('–', '--'), 'svg')
+      } catch(e) {
+        svg = `<pre class="error">${e}</pre>`
+      }
+      item.outerHTML = svg
+    }
+  </script>
+
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+  
+
+</body>
+</html>
