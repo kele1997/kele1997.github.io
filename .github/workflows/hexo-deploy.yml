@@ -1,0 +1,56 @@
+name: HEXO CI
+
+on:
+  push:
+    branches:
+    - master
+  
+env:
+  GIT_USER: kele1997
+  GIT_EMAIL: fengxiaokun97@foxmail.com
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        node-version: [12.x]
+
+    steps:
+      - name: checkout the repo
+        uses: actions/checkout@v3
+
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v3
+        with:
+          node-version: ${{ matrix.node-version }}
+
+      - name: Configuration environment
+        env:
+          HEXO_DEPLOY_PRI: ${{secrets.HEXO_DEPLOY_PRI}}
+        run: |
+          mkdir -p ~/.ssh/
+          echo "$HEXO_DEPLOY_PRI" > ~/.ssh/id_rsa
+          chmod 600 ~/.ssh/id_rsa
+          ssh-keyscan github.com >> ~/.ssh/known_hosts
+          git config --global user.name $GIT_USER
+          git config --global user.email $GIT_EMAIL
+
+      - name: before install
+        run: |
+          npm uninstall hexo-renderer-marked --save
+          npm install hexo-renderer-kramed --save
+          npm install hexo-deployer-git --save
+          npm install hexo-tag-plantuml --save
+      - name: pandoc for mathjax
+        run: |
+          wget https://github.com/jgm/pandoc/releases/download/2.7/pandoc-2.7-1-amd64.deb
+          sudo dpkg -i ./pandoc-2.7-1-amd64.deb
+          sed -i '1s/graphviz/viz/' ./node_modules/hexo-graphviz/lib/render.js
+      - name: Install dependencies
+        run: |
+          npm i -g hexo-cli
+          npm i
+      - name: Deploy hexo
+        run: |
+          hexo clean && hexo generate && hexo deploy

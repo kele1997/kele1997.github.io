@@ -106,11 +106,10 @@ deploy:
   type: git
   repo:
     github:
-      url: https://github.com/kele1997/kele1997.github.io.git
-      branch: master
-      token: $GITHUB_TOKEN
+      url: git@github.com:kele1997/kele1997.github.io.git
+      branch: gh-pages
   name: kele1997
-  email: 2363618563@qq.com
+  email: fengxiaokun97@foxmail.com
 
 tag_plantuml:
 	type: static
