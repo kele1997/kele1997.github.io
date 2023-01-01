@@ -59,7 +59,7 @@
 {%- endif %}
 
 {% if theme.graphviz.enable %}
-  <script src='https://cdnjs.cloudflare.com/ajax/libs/viz.js/1.7.1/viz.js'></script>
+  <script src='https://cdn.bootcdn.net/ajax/libs/viz.js/2.1.2/viz.js'></script>
   <script>
     String.prototype.replaceAll = function(search, replacement) {
       var target = this;
