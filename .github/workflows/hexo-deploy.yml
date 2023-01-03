@@ -65,19 +65,13 @@ jobs:
           npm i
       - name: Deploy hexo
         run: |
-          hexo clean && hexo generate && hexo deploy
-
-      - name: Checkout
-        uses: actions/checkout@v3
-        with:
-          ref: gh-pages
+          hexo clean && hexo generate
       - name: Setup Pages
         uses: actions/configure-pages@v2
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v1
         with:
-          # Upload entire repository
-          path: '.'
+          path: './public'
       - name: Deploy to GitHub Pages
         env:
           GITHUB_TOKEN: ${{secrets.HEXO_DEPLOY_PRI}}
