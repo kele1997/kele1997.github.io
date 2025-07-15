@@ -76,4 +76,4 @@ jobs:
         env:
           GITHUB_TOKEN: ${{secrets.HEXO_DEPLOY_PRI}}
         id: deployment
-        uses: actions/deploy-pages@v1
+        uses: actions/deploy-pages@v3
